@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 import jwt
 import bcrypt
+from .config import settings
 try:
     from blockchain.cryptography import CryptoEngine
 except ImportError:
