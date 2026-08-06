@@ -1,4 +1,11 @@
+import sys
+import os
 import datetime
+
+# Ensure backend directory is on sys.path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
