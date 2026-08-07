@@ -6,6 +6,7 @@ from ..models.models import Election, Candidate, Vote, User, AuditLog
 from ..schemas.schemas import VoteCastRequest, VoteReceiptResponse
 from .auth import get_current_user
 from ..services.blockchain_service import blockchain_service
+from ..core.security import encrypt_vote_payload
 try:
     from blockchain.wallet import VoterWallet
     from blockchain.cryptography import CryptoEngine
