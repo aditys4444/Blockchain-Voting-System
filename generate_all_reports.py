@@ -650,11 +650,17 @@ def build_pdf_reports():
     t_dec_m.setStyle(ref_table_style)
     story.append(t_dec_m)
 
-    # Build PDF
-    pdf_path = "docs/Blockchain_Voting_System_Full_Project_Report.pdf"
-    doc = SimpleDocTemplate(pdf_path, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
-    doc.build(story)
-    print(f"Successfully generated Full Project Report PDF at: {pdf_path}")
+    # Build PDF - Output All-In-One PDF Document
+    pdf_path_all = "docs/Blockchain_Voting_System_All_In_One_Project_Report.pdf"
+    pdf_path_full = "docs/Blockchain_Voting_System_Full_Project_Report.pdf"
+
+    doc_all = SimpleDocTemplate(pdf_path_all, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
+    doc_all.build(story)
+    print(f"Successfully generated All-In-One PDF report at: {pdf_path_all}")
+
+    doc_full = SimpleDocTemplate(pdf_path_full, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
+    doc_full.build(story)
+    print(f"Successfully generated Full PDF report at: {pdf_path_full}")
 
 if __name__ == "__main__":
     build_pdf_reports()
