@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const getBaseUrl = () => {
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
+  const metaEnv = (import.meta as any).env;
+  if (metaEnv && metaEnv.VITE_API_BASE_URL) {
+    return metaEnv.VITE_API_BASE_URL;
   }
   if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
     return 'http://127.0.0.1:8000/api/v1';
