@@ -51,51 +51,58 @@ def startup_event():
         # Initialize Blockchain ledger sync
         blockchain_service.initialize_from_db(db)
 
-        # Seed initial admin user if no admin exists
-        admin_user = db.query(models.User).filter(models.User.role == "admin").first()
-        if not admin_user:
-            admin_user = models.User(
-                email="admin@blockchainvoting.org",
-                username="admin",
-                hashed_password=get_password_hash("Admin123!"),
-                role="admin"
-            )
-            db.add(admin_user)
+        # Seed initial admin accounts
+        for admin_email, admin_uname, admin_pwd in [
+            ("admin@blockchainvoting.org", "admin", "Admin123!"),
+            ("admin@voting.edu", "admin_edu", "admin123")
+        ]:
+            if not db.query(models.User).filter(models.User.email == admin_email).first():
+                db.add(models.User(
+                    email=admin_email,
+                    username=admin_uname,
+                    hashed_password=get_password_hash(admin_pwd),
+                    role="admin"
+                ))
 
-        # Seed initial voter user
-        voter_user = db.query(models.User).filter(models.User.role == "voter").first()
-        if not voter_user:
-            voter_user = models.User(
-                email="voter@blockchainvoting.org",
-                username="voter1",
-                hashed_password=get_password_hash("Voter123!"),
-                role="voter"
-            )
-            db.add(voter_user)
+        # Seed initial voter accounts
+        for voter_email, voter_uname, voter_pwd in [
+            ("voter@blockchainvoting.org", "voter1", "Voter123!"),
+            ("voter1@voting.edu", "voter_edu", "voter123")
+        ]:
+            if not db.query(models.User).filter(models.User.email == voter_email).first():
+                db.add(models.User(
+                    email=voter_email,
+                    username=voter_uname,
+                    hashed_password=get_password_hash(voter_pwd),
+                    role="voter"
+                ))
 
-        # Seed initial observer user
-        observer_user = db.query(models.User).filter(models.User.role == "observer").first()
-        if not observer_user:
-            observer_user = models.User(
-                email="observer@blockchainvoting.org",
-                username="observer1",
-                hashed_password=get_password_hash("Observer123!"),
-                role="observer"
-            )
-            db.add(observer_user)
+        # Seed initial observer accounts
+        for obs_email, obs_uname, obs_pwd in [
+            ("observer@blockchainvoting.org", "observer1", "Observer123!"),
+            ("observer@voting.edu", "observer_edu", "observer123")
+        ]:
+            if not db.query(models.User).filter(models.User.email == obs_email).first():
+                db.add(models.User(
+                    email=obs_email,
+                    username=obs_uname,
+                    hashed_password=get_password_hash(obs_pwd),
+                    role="observer"
+                ))
 
         db.commit()
 
         # Seed Demo Election if none exists
         demo_election = db.query(models.Election).first()
         if not demo_election:
+            admin_ref = db.query(models.User).filter(models.User.role == "admin").first()
             demo_election = models.Election(
                 title="General Presidential Election 2026",
                 description="Official decentralised blockchain election for 2026 leadership.",
                 status="active",
                 start_time=datetime.datetime.utcnow(),
                 end_time=datetime.datetime.utcnow() + datetime.timedelta(days=7),
-                created_by=admin_user.id
+                created_by=admin_ref.id if admin_ref else 1
             )
             db.add(demo_election)
             db.commit()
