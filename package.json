@@ -1,0 +1,19 @@
+{
+  "name": "blockchain-voting-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "start_project.bat",
+    "dev": "start_project.bat",
+    "build": "cd frontend && npm run build"
+  },
+  "buildCommand": "cd frontend && npm run build",
+  "installCommand": "cd frontend && npm install --legacy-peer-deps",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
