@@ -31,7 +31,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6">
+      <div className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6 ${user ? 'pb-20 md:pb-6' : ''}`}>
         {user && <Sidebar />}
         <main className="flex-1 min-w-0">{children}</main>
       </div>
