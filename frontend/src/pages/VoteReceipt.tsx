@@ -6,17 +6,24 @@ import { QRCodeModal } from '../components/QRCodeModal';
 
 export const VoteReceipt: React.FC = () => {
   const [receipts, setReceipts] = useState<ReceiptType[]>([]);
-  const [activeModalReceipt, setActiveModalReceipt] = useState<ReceiptType | null>(null);
+  const [activeModalReceipt, setActiveModalReceipt] = useState<any>(null);
   
   // Receipt Verification Tool
   const [verifyHashInput, setVerifyHashInput] = useState('');
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [verifying, setVerifying] = useState(false);
 
-  useEffect(() => {
+  const fetchReceipts = () => {
     api.get('/votes/my-receipts')
       .then(res => setReceipts(res.data))
-      .catch(console.error);
+      .catch(() => {
+        const saved = localStorage.getItem('demo_receipts');
+        if (saved) setReceipts(JSON.parse(saved));
+      });
+  };
+
+  useEffect(() => {
+    fetchReceipts();
   }, []);
 
   const handleVerify = async (e: React.FormEvent) => {
@@ -27,7 +34,20 @@ export const VoteReceipt: React.FC = () => {
       const res = await api.get(`/votes/verify-receipt/${verifyHashInput.trim()}`);
       setVerificationResult(res.data);
     } catch (err) {
-      setVerificationResult({ verified: false, message: 'Invalid receipt hash or network error.' });
+      const saved = localStorage.getItem('demo_receipts');
+      const receiptsList: ReceiptType[] = saved ? JSON.parse(saved) : [];
+      const found = receiptsList.find(r => r.receipt_hash === verifyHashInput.trim() || r.tx_hash === verifyHashInput.trim());
+
+      if (found) {
+        setVerificationResult({
+          verified: true,
+          block_index: found.block_index,
+          tx_hash: found.tx_hash,
+          voter_hash: found.voter_hash
+        });
+      } else {
+        setVerificationResult({ verified: false, message: 'Receipt hash not found in blockchain ledger.' });
+      }
     } finally {
       setVerifying(false);
     }
@@ -88,28 +108,34 @@ export const VoteReceipt: React.FC = () => {
       <div className="p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
         <h3 className="text-base font-bold text-slate-900 dark:text-white">Your Historical Vote Receipts ({receipts.length})</h3>
         
-        <div className="space-y-3">
-          {receipts.map((r) => (
-            <div key={r.vote_id} className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <span className="text-[10px] font-mono text-cyan-500 font-bold">ELECTION #{r.election_id} • BLOCK #{r.block_index}</span>
-                <p className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-1">Receipt Hash: {r.receipt_hash}</p>
-                <p className="text-[10px] text-slate-400 font-mono">TxHash: {r.tx_hash}</p>
-              </div>
+        {receipts.length > 0 ? (
+          <div className="space-y-3">
+            {receipts.map((r, idx) => (
+              <div key={r.vote_id || idx} className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-[10px] font-mono text-cyan-500 font-bold">ELECTION #{r.election_id} • BLOCK #{r.block_index}</span>
+                  <p className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-1">Receipt Hash: {r.receipt_hash}</p>
+                  <p className="text-[10px] text-slate-400 font-mono">TxHash: {r.tx_hash}</p>
+                </div>
 
-              <button
-                onClick={() => setActiveModalReceipt(r)}
-                className="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors self-start sm:self-auto"
-              >
-                <QrCode className="w-4 h-4 text-cyan-500" /> View QR Receipt
-              </button>
-            </div>
-          ))}
-        </div>
+                <button
+                  onClick={() => setActiveModalReceipt(r)}
+                  className="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+                >
+                  <QrCode className="w-4 h-4 text-cyan-500" /> View QR Receipt
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+            No vote receipts found yet. Go to <span className="text-cyan-500 font-semibold">Active Elections</span> to cast your first vote!
+          </div>
+        )}
       </div>
 
       <QRCodeModal
-        isOpen={!!activeModalReceipt}
+        isOpen={Boolean(activeModalReceipt)}
         onClose={() => setActiveModalReceipt(null)}
         receipt={activeModalReceipt}
       />

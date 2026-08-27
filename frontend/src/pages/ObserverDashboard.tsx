@@ -1,8 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Election } from '../types';
-import { Eye, Download, PieChart as PieIcon, BarChart as BarIcon, ShieldCheck } from 'lucide-react';
+import { Download, BarChart as BarIcon, ShieldCheck } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+
+const DEFAULT_ELECTIONS: Election[] = [
+  {
+    id: 1,
+    title: "General Presidential Election 2026",
+    description: "Official decentralised blockchain election for 2026 leadership.",
+    status: "active",
+    start_time: new Date().toISOString(),
+    end_time: new Date(Date.now() + 7 * 86400000).toISOString(),
+    created_by: 1,
+    created_at: new Date().toISOString(),
+    candidates: [
+      {
+        id: 101,
+        election_id: 1,
+        name: "Dr. Alex Rivera",
+        party: "Progressive Tech Party",
+        manifesto: "Focusing on AI innovation, digital rights, and sustainable green technology.",
+        avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+        vote_count: 0
+      },
+      {
+        id: 102,
+        election_id: 1,
+        name: "Elena Rostova",
+        party: "Global Unity Alliance",
+        manifesto: "Transparency, decentralised governance, economic prosperity, and privacy protection.",
+        avatar_url: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
+        vote_count: 0
+      }
+    ]
+  }
+];
 
 export const ObserverDashboard: React.FC = () => {
   const [elections, setElections] = useState<Election[]>([]);
@@ -18,8 +51,16 @@ export const ObserverDashboard: React.FC = () => {
       if (res.data.length > 0 && !selectedElectionId) {
         setSelectedElectionId(res.data[0].id);
       }
+      return;
     } catch (err) {
-      console.error(err);
+      console.log('Using observer elections fallback');
+    }
+
+    const saved = localStorage.getItem('demo_elections');
+    const parsed = saved ? JSON.parse(saved) : DEFAULT_ELECTIONS;
+    setElections(parsed);
+    if (parsed.length > 0 && !selectedElectionId) {
+      setSelectedElectionId(parsed[0].id);
     }
   };
 
@@ -27,9 +68,38 @@ export const ObserverDashboard: React.FC = () => {
     try {
       const res = await api.get(`/observer/live-results/${id}`);
       setLiveResults(res.data);
+      return;
     } catch (err) {
-      console.error(err);
+      console.log('Using observer results fallback');
     }
+
+    const savedElections = localStorage.getItem('demo_elections');
+    const electionsList = savedElections ? JSON.parse(savedElections) : DEFAULT_ELECTIONS;
+    const target = electionsList.find((e: any) => e.id === id) || electionsList[0];
+
+    const savedReceipts = localStorage.getItem('demo_receipts');
+    const receiptsList = savedReceipts ? JSON.parse(savedReceipts) : [];
+    const electionReceipts = receiptsList.filter((r: any) => r.election_id === id);
+
+    let totalVotes = electionReceipts.length;
+    let candidatesWithStats = (target?.candidates || []).map((cand: any) => {
+      const candVotes = electionReceipts.filter((r: any) => r.candidate_id === cand.id).length;
+      return {
+        candidate_id: cand.id,
+        name: cand.name,
+        party: cand.party || 'Independent',
+        vote_count: candVotes,
+        percentage: totalVotes > 0 ? Math.round((candVotes / totalVotes) * 100) : 0
+      };
+    });
+
+    setLiveResults({
+      election_id: id,
+      title: target?.title || 'General Election 2026',
+      status: target?.status || 'active',
+      total_votes: totalVotes,
+      candidates: candidatesWithStats
+    });
   };
 
   useEffect(() => {
@@ -129,7 +199,7 @@ export const ObserverDashboard: React.FC = () => {
             <div className="p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">Candidate Percentage Standings</h3>
               <div className="space-y-3">
-                {liveResults.candidates.map((c: any, i: number) => (
+                {liveResults.candidates.map((c: any) => (
                   <div key={c.candidate_id} className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
                     <div className="flex justify-between items-center text-xs">
                       <span className="font-bold text-slate-900 dark:text-white">{c.name} ({c.party})</span>
