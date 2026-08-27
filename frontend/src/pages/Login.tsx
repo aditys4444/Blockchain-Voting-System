@@ -28,6 +28,27 @@ export const Login: React.FC = () => {
     if ((cred === 'observer1' || cred === 'observer_edu' || cred === 'observer@voting.edu' || cred === 'observer@blockchainvoting.org') && (pwd === 'observer123' || pwd === 'Observer123!')) {
       return { id: 3, email: 'observer@voting.edu', username: 'observer1', role: 'observer' as UserRole, is_active: true, created_at: now };
     }
+
+    try {
+      const saved = localStorage.getItem('demo_registered_users');
+      if (saved) {
+        const registeredList = JSON.parse(saved);
+        const match = registeredList.find((usr: any) =>
+          (usr.email.toLowerCase() === cred || usr.username.toLowerCase() === cred) && usr.password === pwd
+        );
+        if (match) {
+          return {
+            id: match.id,
+            email: match.email,
+            username: match.username,
+            role: match.role as UserRole,
+            is_active: true,
+            created_at: match.created_at || now
+          };
+        }
+      }
+    } catch (e) {}
+
     return null;
   };
 

@@ -29,7 +29,36 @@ export const Register: React.FC = () => {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 1500);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Registration failed');
+      // Local fallback for Vercel demo registration
+      try {
+        const saved = localStorage.getItem('demo_registered_users');
+        const list = saved ? JSON.parse(saved) : [];
+        
+        // Check duplicate email or username
+        const duplicate = list.find((u: any) => u.email === email || u.username === username);
+        if (duplicate) {
+          setError('Username or Email already registered');
+          return;
+        }
+
+        const newUser = {
+          id: Date.now(),
+          email,
+          username,
+          password,
+          role,
+          is_active: true,
+          created_at: new Date().toISOString()
+        };
+
+        list.push(newUser);
+        localStorage.setItem('demo_registered_users', JSON.stringify(list));
+
+        setSuccess(true);
+        setTimeout(() => navigate('/login'), 1500);
+      } catch (storageErr) {
+        setError(err.response?.data?.detail || 'Registration failed');
+      }
     } finally {
       setLoading(false);
     }
