@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { Election, Candidate, VoteReceipt } from '../types';
-import { Vote as VoteIcon, CheckCircle, Sparkles } from 'lucide-react';
+import { Vote as VoteIcon, CheckCircle, Sparkles, RefreshCw, ShieldCheck } from 'lucide-react';
 import { QRCodeModal } from '../components/QRCodeModal';
 
 const DEFAULT_ELECTIONS: Election[] = [
@@ -38,6 +39,7 @@ const DEFAULT_ELECTIONS: Election[] = [
 ];
 
 export const VoterDashboard: React.FC = () => {
+  const { user } = useAuth();
   const [elections, setElections] = useState<Election[]>([]);
   const [myReceipts, setMyReceipts] = useState<VoteReceipt[]>([]);
   const [selectedElection, setSelectedElection] = useState<Election | null>(null);
@@ -91,7 +93,18 @@ export const VoterDashboard: React.FC = () => {
   }, []);
 
   const hasVotedInElection = (electionId: number) => {
-    return myReceipts.some(r => r.election_id === electionId);
+    if (!user) return false;
+    return myReceipts.some(r => r.election_id === electionId && ((r as any).user_id === user.id || (r as any).username === user.username));
+  };
+
+  const resetMyVotes = (electionId: number) => {
+    if (!user) return;
+    const current = getStoredReceipts();
+    const filtered = current.filter(r => !(r.election_id === electionId && ((r as any).user_id === user.id || (r as any).username === user.username)));
+    saveStoredReceipts(filtered);
+    setMyReceipts(filtered);
+    setSelectedCandidate(null);
+    setSelectedElection(null);
   };
 
   const generateMockHex = (len: number) => {
@@ -101,27 +114,30 @@ export const VoterDashboard: React.FC = () => {
     return res;
   };
 
-  const handleCastVote = async () => {
-    if (!selectedElection || !selectedCandidate) return;
+  const handleCastVote = async (cand: Candidate, ele: Election) => {
     setLoading(true);
+    setSelectedElection(ele);
+    setSelectedCandidate(cand);
 
     try {
       const res = await api.post('/votes/cast', {
-        election_id: selectedElection.id,
-        candidate_id: selectedCandidate.id
+        election_id: ele.id,
+        candidate_id: cand.id
       });
       setVoteSuccessReceipt(res.data);
     } catch (err: any) {
       // Local demo vote casting fallback
       const txHash = '0x' + generateMockHex(64);
       const receiptHash = generateMockHex(32);
-      const mockReceipt: VoteReceipt = {
+      const mockReceipt: any = {
         vote_id: Date.now(),
-        election_id: selectedElection.id,
-        candidate_id: selectedCandidate.id,
+        election_id: ele.id,
+        candidate_id: cand.id,
+        user_id: user?.id || 2,
+        username: user?.username || 'voter1',
         voter_hash: generateMockHex(16),
         tx_hash: txHash,
-        block_index: 1,
+        block_index: getStoredReceipts().length + 1,
         receipt_hash: receiptHash,
         created_at: new Date().toISOString()
       };
@@ -132,15 +148,13 @@ export const VoterDashboard: React.FC = () => {
 
       setVoteSuccessReceipt({
         tx_hash: txHash,
-        block_index: 1,
+        block_index: mockReceipt.block_index,
         receipt_hash: receiptHash,
         voter_hash: mockReceipt.voter_hash,
-        election_id: selectedElection.id,
+        election_id: ele.id,
         created_at: new Date().toISOString()
       });
     } finally {
-      setSelectedCandidate(null);
-      setSelectedElection(null);
       setLoading(false);
       fetchVoterData();
     }
@@ -150,10 +164,18 @@ export const VoterDashboard: React.FC = () => {
     <div className="space-y-8">
       
       {/* Header Banner */}
-      <div className="p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800">
-        <span className="text-xs font-mono text-cyan-500 uppercase tracking-widest font-semibold">VOTER PORTAL</span>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Active Elections & Voting Desk</h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Your vote is encrypted with AES-256 GCM and recorded immutably on the SHA-256 ledger</p>
+      <div className="p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span className="text-xs font-mono text-cyan-500 uppercase tracking-widest font-semibold">VOTER PORTAL</span>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Active Elections & Voting Desk</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Your vote is encrypted with AES-256 GCM and recorded immutably on the SHA-256 ledger</p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="px-3 py-1.5 bg-cyan-500/10 text-cyan-500 border border-cyan-500/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4" /> IDENTITY: {user?.username || 'Voter'}
+          </span>
+        </div>
       </div>
 
       {/* Active Elections */}
@@ -171,9 +193,18 @@ export const VoterDashboard: React.FC = () => {
                 </div>
 
                 {alreadyVoted ? (
-                  <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5">
-                    <CheckCircle className="w-4 h-4" /> VOTE RECORDED
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5">
+                      <CheckCircle className="w-4 h-4" /> VOTE RECORDED
+                    </span>
+                    <button
+                      onClick={() => resetMyVotes(ele.id)}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-rose-500/10 text-slate-500 hover:text-rose-500 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
+                      title="Reset my vote to test voting again"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" /> Re-Vote
+                    </button>
+                  </div>
                 ) : (
                   <span className="px-3 py-1.5 bg-cyan-500/10 text-cyan-500 border border-cyan-500/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4" /> READY TO VOTE
@@ -181,26 +212,16 @@ export const VoterDashboard: React.FC = () => {
                 )}
               </div>
 
-              {/* Candidate Selection */}
+              {/* Candidate Selection Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {ele.candidates && ele.candidates.map((cand) => {
-                  const isSelected = selectedCandidate?.id === cand.id && selectedElection?.id === ele.id;
-
                   return (
                     <div
                       key={cand.id}
-                      onClick={() => {
-                        if (!alreadyVoted) {
-                          setSelectedElection(ele);
-                          setSelectedCandidate(cand);
-                        }
-                      }}
-                      className={`p-5 rounded-2xl border transition-all ${
+                      className={`p-5 rounded-2xl border transition-all space-y-4 ${
                         alreadyVoted
-                          ? 'opacity-60 cursor-not-allowed border-slate-200 dark:border-slate-800'
-                          : isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10 shadow-lg shadow-cyan-500/10 ring-2 ring-cyan-500/50 cursor-pointer'
-                          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/50 cursor-pointer'
+                          ? 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30'
+                          : 'border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/50'
                       }`}
                     >
                       <div className="flex items-start gap-4">
@@ -215,27 +236,26 @@ export const VoterDashboard: React.FC = () => {
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{cand.manifesto}</p>
                         </div>
                       </div>
+
+                      {/* Vote Button */}
+                      {!alreadyVoted ? (
+                        <button
+                          onClick={() => handleCastVote(cand, ele)}
+                          disabled={loading}
+                          className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                        >
+                          <VoteIcon className="w-4 h-4" />
+                          {loading ? 'Encrypting & Mining Vote...' : `Vote for ${cand.name}`}
+                        </button>
+                      ) : (
+                        <div className="py-2 text-center text-xs font-semibold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/50 rounded-xl">
+                          Vote Recorded on Ledger
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
-
-              {/* Vote Confirmation Button */}
-              {selectedElection?.id === ele.id && selectedCandidate && !alreadyVoted && (
-                <div className="p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl flex items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2">
-                  <div className="text-xs font-semibold text-cyan-400">
-                    Confirm vote for <span className="font-bold text-white">{selectedCandidate.name}</span> ({selectedCandidate.party})
-                  </div>
-                  <button
-                    onClick={handleCastVote}
-                    disabled={loading}
-                    className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all disabled:opacity-50"
-                  >
-                    <VoteIcon className="w-4 h-4" />
-                    {loading ? 'Encrypting & Mining...' : 'Confirm & Cast Vote'}
-                  </button>
-                </div>
-              )}
 
             </div>
           );
