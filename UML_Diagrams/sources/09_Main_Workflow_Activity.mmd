@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> Authenticate
+    Authenticate --> FetchElections
+    FetchElections --> CheckVoted
+    state CheckVoted <<choice>>
+    CheckVoted --> AlreadyVoted: [voted == true]
+    AlreadyVoted --> ViewReceipts: Navigate /receipts
+    CheckVoted --> SelectCandidate: [voted == false]
+    SelectCandidate --> EncryptAES256: Confirm Choice
+    EncryptAES256 --> MineBlock: PoW Consensus (Diff 4)
+    MineBlock --> StoreReceipt: Save to SQLite & Chain
+    StoreReceipt --> ShowQRModal: Display Receipt & QR
+    ShowQRModal --> [*]
+    ViewReceipts --> [*]

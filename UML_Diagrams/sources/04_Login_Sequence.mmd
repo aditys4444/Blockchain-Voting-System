@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    actor User as User / Browser
+    participant API as Auth Router (/auth/login)
+    participant Sec as SecurityService (Bcrypt)
+    participant DB as SQLite Database
+    participant JWT as JWT Signer (HS256)
+
+    User->>API: POST /api/v1/auth/login {email, password}
+    API->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>API: Return User Record
+    API->>Sec: verify_password(password, hashed_password)
+    Sec-->>API: Password Valid (True)
+    API->>JWT: create_access_token({sub: id, role})
+    JWT-->>API: Return Signed Token String
+    API-->>User: 200 OK {access_token, user_profile}

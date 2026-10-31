@@ -1,0 +1,78 @@
+classDiagram
+    class User {
+        +int id
+        +string email
+        +string username
+        +string hashed_password
+        +string role
+        +bool is_active
+        +datetime created_at
+        +authenticate(password) bool
+        +generate_jwt_token() string
+    }
+
+    class Election {
+        +int id
+        +string title
+        +string description
+        +string status
+        +datetime start_time
+        +datetime end_time
+        +int created_by
+        +activate() void
+        +close() void
+        +get_results() Dict
+    }
+
+    class Candidate {
+        +int id
+        +int election_id
+        +string name
+        +string party
+        +string manifesto
+        +string avatar_url
+        +int vote_count
+        +increment_vote() void
+    }
+
+    class VoteReceipt {
+        +int id
+        +int user_id
+        +int election_id
+        +int candidate_id
+        +string voter_hash
+        +string encrypted_vote
+        +string tx_hash
+        +int block_index
+        +string receipt_hash
+        +datetime created_at
+        +verify_signature() bool
+    }
+
+    class Block {
+        +int index
+        +float timestamp
+        +string previous_hash
+        +string hash
+        +int nonce
+        +string merkle_root
+        +string signature
+        +list transactions
+        +calculate_hash() string
+        +mine_pow(difficulty) void
+    }
+
+    class BlockchainService {
+        +list chain
+        +list pending_txs
+        +int difficulty
+        +mine_block() Block
+        +is_chain_valid() bool
+    }
+
+    User "1" --> "*" Election : creates
+    Election "1" --> "*" Candidate : contains
+    User "1" --> "*" VoteReceipt : casts
+    Election "1" --> "*" VoteReceipt : records
+    VoteReceipt "*" --> "1" Block : mined into
+    BlockchainService "1" --> "*" Block : manages

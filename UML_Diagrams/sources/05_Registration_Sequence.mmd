@@ -1,0 +1,15 @@
+sequenceDiagram
+    autonumber
+    actor Voter as Voter UI (Register.tsx)
+    participant API as Auth Router (/auth/register)
+    participant Sec as SecurityService (Bcrypt)
+    participant DB as SQLite Database
+
+    Voter->>API: POST /api/v1/auth/register {email, username, password}
+    API->>DB: Check Duplicate email or username
+    DB-->>API: No Duplicate Found
+    API->>Sec: hash_password(password, cost=12)
+    Sec-->>API: Return Bcrypt Hash
+    API->>DB: INSERT INTO users (role='voter')
+    DB-->>API: Commit OK & Return user_id
+    API-->>Voter: 201 Created & Automatic Login

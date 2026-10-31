@@ -1,0 +1,10 @@
+graph LR
+    Admin[Administrator] -->|Config, Nominations, CSV| App[Decentralized Blockchain Voting System]
+    Voter[Registered Voter] -->|Credentials, AES-256 Encrypted Vote| App
+    App -->|Cryptographic QR Receipt| Voter
+    Observer[Observer / Auditor] -->|Audit Queries, Hash Lookup| App
+    App -->|Live Standings, Block Explorer| Observer
+    App <-->|SQL Queries| DB[(SQLite 3 Database)]
+    App -->|Vote Arrival Telemetry| AI[AI Fraud Radar Service]
+    AI -->|Risk Score 0-100%| App
+    App <-->|Mined Blocks & Proof-of-Work| Ledger[(SHA-256 Blockchain Ledger)]

@@ -1,0 +1,17 @@
+stateDiagram-v2
+    [*] --> EnterCredentials
+    EnterCredentials --> TransmitRequest: Submit Form
+    TransmitRequest --> VerifyHash: Query Database
+    state CheckCredentials <<choice>>
+    VerifyHash --> CheckCredentials
+    CheckCredentials --> ErrorToast: [Invalid]
+    ErrorToast --> EnterCredentials: Retry
+    CheckCredentials --> IssueToken: [Valid]
+    state CheckRole <<choice>>
+    IssueToken --> CheckRole
+    CheckRole --> AdminStudio: [role == 'admin']
+    CheckRole --> VoterPortal: [role == 'voter']
+    CheckRole --> ObserverDesk: [role == 'observer']
+    AdminStudio --> [*]
+    VoterPortal --> [*]
+    ObserverDesk --> [*]

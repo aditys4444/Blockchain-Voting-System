@@ -1,0 +1,13 @@
+graph TD
+    Voter[Registered Voter] -->|Credentials| P1((1.0 User Authentication))
+    Admin[Administrator] -->|Election Data & Candidates| P2((2.0 Election Management))
+    Voter -->|Vote Selection| P3((3.0 Ballot Encryption))
+    P3 -->|Encrypted Payload| P4((4.0 Block Mining & Consensus))
+    P4 -->|Timestamp & IP| P5((5.0 AI Fraud Telemetry))
+
+    P1 <-->|User Records| D1[(D1: Users Store)]
+    P2 <-->|Elections / Candidates| D2[(D2: Elections Store)]
+    P3 <-->|Voter Hash Check| D3[(D3: Vote Receipts Store)]
+    P4 -->|Mined Block & Receipt| D4[(D4: Blockchain Ledger)]
+    P5 -->|Risk Score & Alerts| Observer[Independent Observer]
+    P4 -->|QR Receipt Hash| Voter

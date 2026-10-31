@@ -1,0 +1,261 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CivicVote Ballot</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "tertiary-fixed": "#89f5e7",
+            "outline": "#76777d",
+            "tertiary-container": "#00201d",
+            "outline-variant": "#c6c6cd",
+            "primary-fixed": "#dae2fd",
+            "primary-fixed-dim": "#bec6e0",
+            "on-tertiary": "#ffffff",
+            "surface-bright": "#f8f9ff",
+            "secondary-container": "#316bf3",
+            "tertiary": "#000000",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "surface": "#f8f9ff",
+            "inverse-surface": "#213145",
+            "inverse-primary": "#bec6e0",
+            "error-container": "#ffdad6",
+            "on-surface": "#0b1c30",
+            "surface-container-highest": "#d3e4fe",
+            "on-secondary-container": "#fefcff",
+            "primary-container": "#131b2e",
+            "on-error": "#ffffff",
+            "on-primary-fixed": "#131b2e",
+            "surface-container-high": "#dce9ff",
+            "primary": "#000000",
+            "on-tertiary-fixed": "#00201d",
+            "on-secondary-fixed": "#00174b",
+            "on-error-container": "#93000a",
+            "surface-dim": "#cbdbf5",
+            "on-primary": "#ffffff",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-container": "#0c9488",
+            "surface-container-low": "#eff4ff",
+            "background": "#f8f9ff",
+            "on-primary-container": "#7c839b",
+            "on-surface-variant": "#45464d",
+            "on-secondary-fixed-variant": "#003ea8",
+            "secondary-fixed-dim": "#b4c5ff",
+            "secondary": "#0051d5",
+            "on-primary-fixed-variant": "#3f465c",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#565e74",
+            "surface-container": "#e5eeff",
+            "inverse-on-surface": "#eaf1ff",
+            "secondary-fixed": "#dbe1ff",
+            "on-tertiary-fixed-variant": "#005049",
+            "on-background": "#0b1c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2.5rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "gutter": "1.5rem",
+            "gutter-sm": "1rem",
+            "gutter-lg": "2rem"
+          },
+          "fontFamily": {
+            "code-mono": ["JetBrains Mono"],
+            "headline-lg": ["Public Sans"],
+            "headline-lg-mobile": ["Public Sans"],
+            "hash-display": ["JetBrains Mono"],
+            "body-lg": ["Public Sans"],
+            "label-md": ["Public Sans"],
+            "body-md": ["Public Sans"],
+            "headline-xl-mobile": ["Public Sans"],
+            "headline-xl": ["Public Sans"],
+            "headline-md": ["Public Sans"]
+          },
+          "fontSize": {
+            "code-mono": ["13px", {"lineHeight": "18px", "letterSpacing": "0", "fontWeight": "500"}],
+            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "hash-display": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400"}],
+            "body-lg": ["16px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-xl-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]}
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col max-w-[390px] mx-auto relative border-x border-outline-variant">
+<!-- MOBILE HEADER -->
+<header class="bg-surface dark:bg-surface-container text-on-surface dark:text-inverse-on-surface flex justify-between items-center w-full px-margin-mobile py-space-sm border-b border-outline-variant sticky top-0 z-50">
+<div class="flex items-center gap-space-sm">
+<button class="p-space-xs text-on-surface dark:text-inverse-on-surface hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<span class="text-headline-md font-headline-md font-bold">CivicVote</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-space-xs bg-surface-container px-space-sm py-1 rounded-full text-label-md">
+<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+<span class="text-xs">PoW Testnet #1,403</span>
+</div>
+<button class="p-space-xs text-on-surface dark:text-inverse-on-surface hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Sticky Voter Wallet Strip -->
+<div class="bg-surface-container-low px-margin-mobile py-space-xs border-b border-outline-variant flex justify-between items-center text-body-md">
+<div class="flex items-center gap-space-xs font-code-mono text-xs">
+<span class="material-symbols-outlined text-sm">account_balance_wallet</span>
+<span>0x71C8...39A2</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 bg-surface-container rounded text-label-md font-bold">Eligible</span>
+<span class="text-xs text-on-surface-variant">• CS Dept</span>
+</div>
+</div>
+<!-- MAIN CANVAS CONTENT -->
+<main class="flex-1 px-margin-mobile py-space-md pb-36 space-y-space-md">
+<!-- BALLOT PROGRESSION -->
+<div class="space-y-space-xs">
+<div class="flex justify-between items-center text-label-md">
+<span class="font-bold">Step 2 of 3: Review & Sign Ballot</span>
+<span class="text-on-surface-variant">66%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-2/3 rounded-full"></div>
+</div>
+<p class="text-xs text-on-surface-variant">Cryptographic signature required to seal ballot into the ledger.</p>
+</div>
+<!-- MOBILE ELECTION CARD -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-md space-y-space-sm">
+<div class="flex justify-between items-start">
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile font-bold">2026 SGA Presidential Election</h1>
+</div>
+<div class="flex items-center gap-space-sm text-xs text-secondary font-semibold">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Voting Open • Closes in 4h 12m</span>
+</div>
+<p class="text-body-md text-on-surface-variant text-xs">
+        Select exactly 1 candidate. Ballots are cryptographically anonymous and verified via zero-knowledge proofs.
+      </p>
+</div>
+<!-- MOBILE CANDIDATE SELECTION CARDS -->
+<div class="space-y-space-sm">
+<h2 class="text-headline-md font-headline-md">Presidential Candidates</h2>
+<!-- Candidate 1: SELECTED -->
+<div class="bg-[#eff6ff] border-2 border-secondary rounded-xl p-space-md space-y-space-sm relative shadow-sm">
+<div class="absolute top-4 right-4 text-secondary">
+<span class="material-symbols-outlined font-bold" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 bg-secondary text-on-secondary rounded-lg flex items-center justify-center font-bold text-headline-md">
+            ML
+          </div>
+<div>
+<h3 class="font-bold text-body-lg">Maya Lin</h3>
+<p class="text-xs text-secondary font-semibold">Progressive Campus Action</p>
+</div>
+</div>
+<ul class="text-xs text-on-surface-variant space-y-1 pl-4 list-disc">
+<li>Expansion of 24/7 campus library access & safety escorts</li>
+<li>Tuition freeze advocacy & transparent student fee allocation</li>
+<li>Mental health resource integration across all departments</li>
+</ul>
+<div class="pt-space-xs flex justify-between items-center">
+<a class="text-secondary text-xs font-bold hover:underline flex items-center gap-1" href="#">
+            Read Manifesto (PDF) <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+<span class="text-xs font-code-mono text-on-surface-variant">ID: #8921</span>
+</div>
+</div>
+<!-- Candidate 2: UNSELECTED -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-md space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 bg-surface-container text-on-surface rounded-lg flex items-center justify-center font-bold text-headline-md">
+              JH
+            </div>
+<div>
+<h3 class="font-bold text-body-lg">Jordan Hayes</h3>
+<p class="text-xs text-on-surface-variant">Student First Coalition</p>
+</div>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center"></div>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-2">
+          Focusing on athletic funding reform, parking accessibility, and reduced textbook costs through digital open-source initiatives.
+        </p>
+</div>
+<!-- Candidate 3: UNSELECTED -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-md space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 bg-surface-container text-on-surface rounded-lg flex items-center justify-center font-bold text-headline-md">
+              PS
+            </div>
+<div>
+<h3 class="font-bold text-body-lg">Priya Sharma</h3>
+<p class="text-xs text-on-surface-variant">Civic Transparency Alliance</p>
+</div>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center"></div>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-2">
+          Advocating for decentralized student government spending, absolute fiscal auditing via public ledgers, and carbon-neutral campus policies.
+        </p>
+</div>
+</div>
+</main>
+<!-- STICKY BOTTOM MOBILE ACTION BAR & CRYPTO DRAWER -->
+<div class="fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto bg-surface-container-lowest border-t border-outline-variant p-space-md space-y-space-sm shadow-lg z-50">
+<div class="bg-surface-container-low p-space-sm rounded-lg flex justify-between items-center text-xs">
+<div>
+<span class="text-on-surface-variant">Your Choice:</span>
+<span class="font-bold text-on-surface ml-1">Maya Lin</span>
+</div>
+<div class="font-code-mono text-on-surface-variant">
+        Gas: 0.00012 ETH
+      </div>
+</div>
+<div class="flex gap-space-sm">
+<button class="flex-1 bg-surface-container-low border border-outline-title text-on-surface py-2.5 rounded font-bold text-body-md hover:bg-surface-container transition-all">
+        ← Change
+      </button>
+<button class="flex-[2] bg-primary text-on-primary py-2.5 rounded font-bold text-body-md hover:bg-surface-container-highest hover:text-on-surface transition-all flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-sm">lock</span>
+        Authorize & Submit
+      </button>
+</div>
+<p class="text-[10px] text-center text-on-surface-variant">
+      Cryptographically signed votes are immutable. Anti-double-vote ledger enforced.
+    </p>
+</div>
+</body></html>

@@ -1,0 +1,15 @@
+sequenceDiagram
+    autonumber
+    participant Client as Client Browser (Axios)
+    participant Gateway as FastAPI ASGI Gateway
+    participant AI as AI Fraud Radar Service
+    participant WS as WebSockets Broadcaster
+    participant Observer as Observer Live Desk
+
+    Client->>Gateway: HTTP Request with Bearer Token
+    Gateway->>AI: Log Timestamp (t) & Client IP
+    AI->>AI: Check Arrival Interval (<500ms burst)
+    AI-->>Gateway: Return Fraud Risk Score (0-100%)
+    Gateway->>WS: Broadcast Tally & Risk Score Update
+    WS-->>Observer: Real-time Recharts Live Update
+    Gateway-->>Client: HTTP JSON Response (200 OK)

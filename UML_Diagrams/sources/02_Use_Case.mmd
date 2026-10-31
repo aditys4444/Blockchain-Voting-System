@@ -1,0 +1,37 @@
+graph TD
+    Admin((Administrator))
+    Voter((Registered Voter))
+    Observer((Independent Observer))
+    AI((AI Fraud Radar))
+
+    subgraph Decentralized Voting System
+        UC1(UC-01: User Login & JWT Auth)
+        UC2(UC-02: Create Election Instance)
+        UC3(UC-03: Register Candidate Profile)
+        UC4(UC-04: Bulk CSV Voter Import)
+        UC5(UC-05: Browse Active Ballots)
+        UC6(UC-06: Cast Encrypted Ballot)
+        UC7(UC-07: Download QR Receipt)
+        UC8(UC-08: Mine PoW Block)
+        UC9(UC-09: Sign Block with SECP256R1)
+        UC10(UC-10: Verify Individual Receipt)
+        UC11(UC-11: Full Chain Cryptographic Audit)
+        UC12(UC-12: AI Fraud Telemetry Scoring)
+    end
+
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Voter --> UC1
+    Voter --> UC5
+    Voter --> UC6
+    Voter --> UC7
+    Observer --> UC10
+    Observer --> UC11
+    Observer --> UC12
+
+    UC6 -.->|<<include>>| UC8
+    UC8 -.->|<<include>>| UC9
+    UC6 -.->|<<include>>| UC7
+    UC6 -.->|<<extend>>| UC12

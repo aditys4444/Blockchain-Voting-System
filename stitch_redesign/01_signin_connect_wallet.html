@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CivicVote — Blockchain Voting System | University Election Portal</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Public Sans & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Public+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#ffdad6",
+            "surface-container-low": "#eff4ff",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#b4c5ff",
+            "surface-container-high": "#dce9ff",
+            "tertiary-container": "#00201d",
+            "surface": "#f8f9ff",
+            "on-secondary-container": "#fefcff",
+            "secondary-fixed": "#dbe1ff",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#d3e4fe",
+            "surface-variant": "#d3e4fe",
+            "tertiary": "#000000",
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed": "#131b2e",
+            "surface-tint": "#565e74",
+            "on-tertiary-container": "#0c9488",
+            "on-secondary-fixed-variant": "#003ea8",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "on-primary": "#ffffff",
+            "on-tertiary-fixed-variant": "#005049",
+            "primary-fixed-dim": "#bec6e0",
+            "surface-container": "#e5eeff",
+            "background": "#f8f9ff",
+            "on-background": "#0b1c30",
+            "on-primary-fixed-variant": "#3f465c",
+            "primary": "#000000",
+            "secondary-container": "#316bf3",
+            "on-primary-container": "#7c839b",
+            "inverse-on-surface": "#eaf1ff",
+            "outline": "#76777d",
+            "error": "#ba1a1a",
+            "on-surface-variant": "#45464d",
+            "on-error": "#ffffff",
+            "surface-dim": "#cbdbf5",
+            "inverse-primary": "#bec6e0",
+            "tertiary-fixed": "#89f5e7",
+            "on-tertiary-fixed": "#00201d",
+            "on-secondary-fixed": "#00174b",
+            "secondary": "#0051d5",
+            "on-secondary": "#ffffff",
+            "on-surface": "#0b1c30",
+            "primary-fixed": "#dae2fd",
+            "inverse-surface": "#213145",
+            "primary-container": "#131b2e",
+            "outline-variant": "#c6c6cd",
+            "surface-bright": "#f8f9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "gutter-lg": "2rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "margin": "2rem",
+            "gutter-sm": "1rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Public Sans"],
+            "headline-lg-mobile": ["Public Sans"],
+            "body-lg": ["Public Sans"],
+            "headline-md": ["Public Sans"],
+            "label-md": ["Public Sans"],
+            "code-mono": ["JetBrains Mono"],
+            "hash-display": ["JetBrains Mono"],
+            "headline-xl-mobile": ["Public Sans"],
+            "body-md": ["Public Sans"],
+            "headline-xl": ["Public Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "code-mono": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "500" }],
+            "hash-display": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Subtle live pulse animation */
+    @keyframes subtle-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+    .live-pulse {
+      animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TOP STATUS BANNER: Institution & Live Network Metric -->
+<aside aria-label="System Network Status" class="bg-surface-container-lowest border-b border-outline-variant w-full text-on-surface-variant font-label-md text-label-md py-1.5 px-margin">
+<div class="max-w-[1200px] mx-auto flex flex-wrap justify-between items-center gap-2">
+<div class="flex items-center gap-space-sm">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-surface-container text-on-surface border border-outline-variant text-[11px] font-medium">
+<span class="w-2 h-2 rounded-full bg-emerald-600 live-pulse"></span>
+<span>PoW Testnet (Chain ID: 1337)</span>
+</span>
+<span class="text-outline-variant">|</span>
+<span class="font-code-mono text-code-mono text-on-surface-variant text-[12px]">Block #1,402</span>
+<span class="text-outline-variant">|</span>
+<span class="text-[12px] text-on-surface-variant">Latency: 12ms</span>
+</div>
+<div class="flex items-center gap-space-md text-[12px]">
+<a class="inline-flex items-center gap-1 text-secondary hover:text-primary transition-colors" href="#audit-contracts">
+<span class="material-symbols-outlined text-[15px]" data-icon="terminal">terminal</span>
+<span>Audit Specs &amp; Contracts</span>
+</a>
+<span class="text-outline-variant">|</span>
+<a class="inline-flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#helpdesk">
+<span class="material-symbols-outlined text-[15px]" data-icon="support_agent">support_agent</span>
+<span>Helpdesk Registrar</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- SHARED COMPONENT: TopNavBar (Exact mapping from JSON) -->
+<header class="bg-surface-container-lowest border-b border-outline-variant w-full sticky top-0 z-40">
+<div class="flex justify-between items-center w-full px-gutter md:px-gutter-lg max-w-[1200px] mx-auto h-16">
+<!-- Brand Cluster -->
+<div class="flex items-center gap-space-md">
+<!-- University Seal / Insignia Anchor -->
+<div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary"><a class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface" href="#">CivicVote</a><span class="hidden sm:inline-block text-[11px] font-label-md uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-semibold border border-outline-variant">College Voting Demo</span></div>
+<div class="flex items-baseline gap-2"><a class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface" href="#">CivicVote</a><span class="hidden sm:inline-block text-[11px] font-label-md uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-semibold border border-outline-variant">College Voting Demo</span></div>
+</div>
+<!-- Navigation Links (Context: Voter Directory & Verification) -->
+<nav aria-label="Portal Navigation" class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Ballot Ledger</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Audit Proofs</a>
+<a aria-current="page" class="text-secondary font-bold border-b-2 border-secondary pb-1 hover:text-primary transition-colors duration-150" href="#">Voter Directory</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Governance Registry</a>
+</nav>
+<!-- Trailing Actions Cluster -->
+<div class="flex items-center gap-space-sm">
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-outline rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container-low transition-colors duration-150" onclick="switchState('state-connecting')" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="school">school</span>
+<span>University SSO</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-semibold hover:bg-primary-container transition-colors duration-150 shadow-none" onclick="switchState('state-connected')" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified_user">verified_user</span>
+<span>Connect Wallet</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-margin py-space-xl">
+<!-- HERO TITLE SECTION -->
+<div class="mb-space-xl">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-label-md font-label-md text-on-surface-variant mb-space-sm">
+<span>University Elections 2025-2026</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface font-semibold">Student Government Association Ballot</span>
+</nav>
+<!-- Section Title & Subtitle -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div>
+<h1 class="text-headline-xl font-headline-xl text-on-surface tracking-tight">Secure Campus Voter Authentication</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-3xl mt-1">
+            Cast your ballot in university student elections. Authentication requires connecting your campus-registered Web3 wallet or signing in with university credentials to sign cryptographic zero-knowledge ballots.
+          </p>
+</div>
+<div class="hidden lg:flex items-center gap-2 px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="verified">verified</span>
+<span>Consensus Node: <strong class="font-code-mono text-on-surface">Campus-PoW-Node-01</strong></span>
+</div>
+</div>
+<!-- Security Notice Box -->
+<div class="mt-space-lg p-space-md bg-surface-container-lowest border border-outline-variant rounded-lg flex items-start gap-space-md shadow-sm">
+<div class="p-1 rounded bg-surface-container text-secondary mt-0.5">
+<span class="material-symbols-outlined text-[20px]" data-icon="security">security</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface font-bold">Academic Testnet Protocol</span>
+<span class="text-xs text-outline font-medium">• Non-Custodial &amp; Peer-to-Peer Verified</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-0.5">
+            Immutable, privacy-preserving ballot verification. By design, no cryptographic student identity or wallet address is ever recorded in linkable proximity to individual ballot choices.
+          </p>
+</div>
+<div class="hidden sm:block text-right">
+<span class="text-[11px] font-code-mono text-outline block">ZK-SNARK Verifier</span>
+<span class="text-[11px] font-code-mono text-on-surface font-semibold">v4.1.2-academic</span>
+</div>
+</div>
+</div>
+<!-- MAIN AUTHENTICATION CARD (Dual Pathway Grid Layout) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg items-start">
+<!-- ========================================== -->
+<!-- COLUMN 1: PATHWAY A - WEB3 WALLET (PRIMARY) -->
+<!-- ========================================== -->
+<section aria-labelledby="pathway-a-heading" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-space-lg flex flex-col h-full">
+<!-- Pathway Header -->
+<div class="flex items-start justify-between pb-space-md border-b border-outline-variant">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low border border-outline-variant flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-2xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-surface-container text-secondary border border-secondary-fixed">Pathway A</span>
+<span class="text-xs font-code-mono text-outline">EVM Direct</span>
+</div>
+<h2 class="text-headline-md font-headline-md text-on-surface mt-1" id="pathway-a-heading">Connect Web3 Wallet</h2>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="shield" title="Hardware and Web3 signatures are audited">shield</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-space-md mb-space-md">
+          Sign transactions directly with your registered hardware or browser wallet. The student ballot token will be verified against the semester registrar smart contract.
+        </p>
+<!-- Wallet Provider Selector Tiles -->
+<div class="space-y-2 mb-space-lg">
+<label class="text-label-md font-label-md text-on-surface-variant block mb-1">Select Hardware / Web3 Extension</label>
+<!-- MetaMask Button -->
+<button class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant bg-surface-container-lowest hover:border-outline hover:bg-surface transition-all text-left group" onclick="switchState('state-connecting')" type="button">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-low flex items-center justify-center font-bold text-on-surface font-code-mono text-sm border border-outline-variant">
+                🦊
+              </div>
+<div>
+<span class="font-headline-md text-body-md font-semibold text-on-surface block">MetaMask</span>
+<span class="text-xs text-on-surface-variant">Recommended for Chrome, Brave &amp; Firefox</span>
+</div>
+</div>
+<span class="text-xs font-code-mono px-2 py-1 bg-surface-container rounded text-on-surface-variant group-hover:text-primary">EIP-1193</span>
+</button>
+<!-- Rabby Wallet Button -->
+<button class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant bg-surface-container-lowest hover:border-outline hover:bg-surface transition-all text-left group" onclick="switchState('state-connecting')" type="button">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-low flex items-center justify-center font-bold text-on-surface font-code-mono text-sm border border-outline-variant">
+                🐇
+              </div>
+<div>
+<span class="font-headline-md text-body-md font-semibold text-on-surface block">Rabby Wallet</span>
+<span class="text-xs text-on-surface-variant">Curated for transaction inspection &amp; simulation</span>
+</div>
+</div>
+<span class="text-xs font-code-mono px-2 py-1 bg-surface-container rounded text-on-surface-variant group-hover:text-primary">Pre-Simulate</span>
+</button>
+<!-- WalletConnect Button -->
+<button class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant bg-surface-container-lowest hover:border-outline hover:bg-surface transition-all text-left group" onclick="switchState('state-connecting')" type="button">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-low flex items-center justify-center font-bold text-secondary font-code-mono text-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+</div>
+<div>
+<span class="font-headline-md text-body-md font-semibold text-on-surface block">WalletConnect / Mobile</span>
+<span class="text-xs text-on-surface-variant">QR Code or College Testnet RPC mobile link</span>
+</div>
+</div>
+<span class="text-xs font-code-mono px-2 py-1 bg-surface-container rounded text-on-surface-variant group-hover:text-primary">v2 Relay</span>
+</button>
+</div>
+<!-- ============================================== -->
+<!-- LIVE DEMO STATE SWITCHER CONTROLLER (5 States) -->
+<!-- ============================================== -->
+<div class="border-t border-outline-variant pt-space-md mt-auto">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-label-md font-label-md uppercase tracking-wider text-on-surface-variant font-bold">Demo Interactive State Simulator</span>
+</div>
+<span class="text-[11px] text-outline font-code-mono">Auditor Mode Active</span>
+</div>
+<!-- Selector Tabs for All 5 States -->
+<div class="grid grid-cols-5 gap-1 p-1 bg-surface-container rounded-lg mb-space-md text-center">
+<button class="py-1 px-1.5 text-[11px] font-semibold rounded bg-surface-container-lowest text-on-surface shadow-xs transition-colors" id="tab-btn-disconnected" onclick="switchState('state-disconnected')" type="button">
+              1. Disconnected
+            </button>
+<button class="py-1 px-1.5 text-[11px] font-semibold rounded text-on-surface-variant hover:text-on-surface transition-colors" id="tab-btn-connecting" onclick="switchState('state-connecting')" type="button">
+              2. Connecting
+            </button>
+<button class="py-1 px-1.5 text-[11px] font-semibold rounded text-on-surface-variant hover:text-on-surface transition-colors" id="tab-btn-connected" onclick="switchState('state-connected')" type="button">
+              3. Eligible
+            </button>
+<button class="py-1 px-1.5 text-[11px] font-semibold rounded text-on-surface-variant hover:text-on-surface transition-colors" id="tab-btn-wrong-net" onclick="switchState('state-wrong-net')" type="button">
+              4. Network Err
+            </button>
+<button class="py-1 px-1.5 text-[11px] font-semibold rounded text-on-surface-variant hover:text-on-surface transition-colors" id="tab-btn-failed" onclick="switchState('state-failed')" type="button">
+              5. Failed
+            </button>
+</div>
+<!-- ==================================== -->
+<!-- DYNAMIC CARD VIEW: 5 REALIZED STATES -->
+<!-- ==================================== -->
+<!-- STATE 1: DISCONNECTED (DEFAULT) -->
+<div class="demo-state-view p-space-md rounded-lg border border-outline-variant bg-surface" id="state-disconnected">
+<div class="flex items-start gap-3">
+<div class="p-2 rounded bg-surface-container text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="link_off">link_off</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-md text-body-md font-semibold text-on-surface">No Wallet Connected</h4>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+                  No active Web3 session detected. Connect to verify your student eligibility on-chain against the University SGA Registrar.
+                </p>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="text-[11px] font-code-mono text-outline">Status: Awaiting provider init</span>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg text-xs font-semibold hover:bg-primary-container transition-colors inline-flex items-center gap-1.5" onclick="switchState('state-connecting')" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="cable">cable</span>
+<span>Connect Wallet</span>
+</button>
+</div>
+</div>
+<!-- STATE 2: CONNECTING... -->
+<div class="demo-state-view hidden p-space-md rounded-lg border border-secondary bg-surface-container-low" id="state-connecting">
+<div class="flex items-center gap-3">
+<svg class="animate-spin h-5 w-5 text-secondary" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<div>
+<h4 class="font-headline-md text-body-md font-semibold text-secondary">Awaiting Signature &amp; Account Access...</h4>
+<p class="text-xs text-on-surface-variant mt-0.5">
+                  Requesting cryptographic identity signature. Please confirm the authorization prompt inside your browser extension window.
+                </p>
+</div>
+</div>
+<div class="mt-3 bg-surface-container-lowest p-2 rounded border border-outline-variant text-[11px] font-code-mono text-on-surface-variant flex items-center justify-between">
+<span>Calling: <code class="text-on-surface font-semibold">eth_requestAccounts</code></span>
+<span class="text-secondary animate-pulse">Pending confirmation (0:14)</span>
+</div>
+</div>
+<!-- STATE 3: CONNECTED (ELIGIBLE) -->
+<div class="demo-state-view hidden p-space-md rounded-lg border-2 border-emerald-600 bg-emerald-50/60" id="state-connected">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+<span class="font-code-mono text-xs font-bold text-emerald-950">0x71C8...39A2 Connected</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded border border-emerald-300">Verified</span>
+</div>
+<button class="text-xs text-on-surface-variant hover:text-error underline" onclick="switchState('state-disconnected')" type="button">Disconnect</button>
+</div>
+<div class="grid grid-cols-2 gap-2 my-3 text-xs">
+<div class="bg-surface-container-lowest p-2 rounded border border-emerald-200">
+<span class="text-outline text-[11px] block">Verified Department</span>
+<span class="font-semibold text-on-surface">CS &amp; Engineering (UG-4)</span>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded border border-emerald-200">
+<span class="text-outline text-[11px] block">Ballot Allowance</span>
+<span class="font-semibold text-emerald-800 font-code-mono">1 Unspent Ballot Token</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2.5 rounded border border-emerald-200 flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-700 text-base" data-icon="task_alt">task_alt</span>
+<span class="text-on-surface">Campus PoW Testnet (Block #1,402)</span>
+</div>
+<span class="font-code-mono text-outline text-[11px]">Audit Hash: 0x9f...a41d</span>
+</div>
+<div class="mt-3 flex items-center justify-end gap-2">
+<button class="px-4 py-2 bg-emerald-700 text-on-primary rounded-lg text-xs font-semibold hover:bg-emerald-800 transition-colors inline-flex items-center gap-1.5 shadow-xs" type="button">
+<span>Proceed to Ballot (Sign ZK Vote)</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- STATE 4: WRONG NETWORK WARNING -->
+<div class="demo-state-view hidden p-space-md rounded-lg border-2 border-amber-500 bg-amber-50/70" id="state-wrong-net">
+<div class="flex items-start gap-3">
+<div class="p-1 rounded bg-amber-200 text-amber-900 mt-0.5">
+<span class="material-symbols-outlined text-lg" data-icon="warning">warning</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-md text-body-md font-semibold text-amber-950">Wrong Network Detected</h4>
+<p class="text-xs text-amber-900 mt-1">
+                  Connected to <strong class="font-code-mono">Ethereum Mainnet (Chain ID: 1)</strong>. University governance smart contracts reside strictly on the private Campus PoW Testnet.
+                </p>
+</div>
+</div>
+<div class="mt-3 p-2 rounded bg-surface-container-lowest border border-amber-200 text-[11px] font-code-mono text-on-surface-variant flex items-center justify-between">
+<span>Required RPC: <code class="text-on-surface">https://testnet.rpc.campus.edu:8545</code></span>
+<span class="text-amber-800 font-semibold">Chain: 1337</span>
+</div>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-[11px] text-amber-900 font-medium">Automatic chain addition available</span>
+<button class="px-3 py-1.5 bg-amber-600 text-on-primary rounded-lg text-xs font-semibold hover:bg-amber-700 transition-colors inline-flex items-center gap-1" onclick="switchState('state-connected')" type="button">
+<span class="material-symbols-outlined text-[15px]" data-icon="sync">sync</span>
+<span>Switch to Campus Testnet (1337)</span>
+</button>
+</div>
+</div>
+<!-- STATE 5: CONNECTION FAILED -->
+<div class="demo-state-view hidden p-space-md rounded-lg border-2 border-red-500 bg-red-50/70" id="state-failed">
+<div class="flex items-start gap-3">
+<div class="p-1 rounded bg-red-200 text-red-900 mt-0.5">
+<span class="material-symbols-outlined text-lg" data-icon="error">error</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-md text-body-md font-semibold text-red-950">Connection Rejected or RPC Node Unreachable</h4>
+<p class="text-xs text-red-900 mt-1">
+                  The Web3 provider timed out or the authorization request was declined by user.
+                </p>
+<div class="mt-2 p-1.5 bg-surface-container-lowest rounded border border-red-200 font-code-mono text-[11px] text-red-800">
+                  Error Code: -32002 (Request Pending or Node Socket Timeout)
+                </div>
+</div>
+</div>
+<div class="mt-3 flex items-center justify-end gap-2 pt-2 border-t border-red-200">
+<a class="text-xs text-red-900 underline hover:text-black" href="#helpdesk">Contact Registrar IT Support</a>
+<button class="px-3 py-1.5 bg-red-700 text-on-primary rounded-lg text-xs font-semibold hover:bg-red-800 transition-colors inline-flex items-center gap-1" onclick="switchState('state-connecting')" type="button">
+<span class="material-symbols-outlined text-[15px]" data-icon="refresh">refresh</span>
+<span>Retry Connection</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- COLUMN 2: PATHWAY B - CAMPUS CREDENTIALS (INSTITUTIONAL) -->
+<!-- ======================================================== -->
+<section aria-labelledby="pathway-b-heading" class="bg-surface-container-lowest border border-outline-variant rounded-lg p-space-lg flex flex-col h-full">
+<!-- Pathway Header -->
+<div class="flex items-start justify-between pb-space-md border-b border-outline-variant">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low border border-outline-variant flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-2xl" data-icon="corporate_fare">corporate_fare</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-surface-container text-on-surface border border-outline-variant">Pathway B</span>
+<span class="text-xs font-code-mono text-outline">SSO / SAML 2.0</span>
+</div>
+<h2 class="text-headline-md font-headline-md text-on-surface mt-1" id="pathway-b-heading">Campus Student Credentials Sign In</h2>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="domain_verification" title="University Active Directory integrated">domain_verification</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-space-md mb-space-md">
+          Sign in via campus credentials. An ephemeral custodial voting session key will be provisioned on-chain for the duration of the ballot casting transaction.
+        </p>
+<!-- Role Toggle Control -->
+<div class="mb-space-md">
+<label class="text-label-md font-label-md text-on-surface-variant block mb-1">Select Authentication Role</label>
+<div class="grid grid-cols-2 p-1 bg-surface-container rounded-lg border border-outline-variant text-center" role="radiogroup">
+<button class="py-1.5 text-xs font-semibold rounded bg-surface-container-lowest text-on-surface shadow-xs transition-colors flex items-center justify-center gap-1.5" id="role-voter" onclick="toggleRole('voter')" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="how_to_vote">how_to_vote</span>
+<span>Student Voter</span>
+</button>
+<button class="py-1.5 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-1.5" id="role-admin" onclick="toggleRole('admin')" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="visibility">visibility</span>
+<span>Election Observer / Audit Admin</span>
+</button>
+</div>
+</div>
+<!-- Campus Credential Form -->
+<form class="space-y-3.5" onsubmit="event.preventDefault(); switchState('state-connected');">
+<!-- Field 1: Institutional Email -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="text-label-md font-label-md text-on-surface" for="campus-email">Institutional Email</label>
+<span class="text-[11px] text-outline font-code-mono">Active Directory</span>
+</div>
+<div class="relative">
+<input class="w-full h-10 px-3 pl-9 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-outline-variant font-body-md" id="campus-email" placeholder="voter@university.edu" required="" type="email" value="j.doe@cs.campus.edu"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-[18px]" data-icon="mail">mail</span>
+</div>
+<p class="text-[11px] text-on-surface-variant mt-1">Must match your university Active Directory record.</p>
+</div>
+<!-- Field 2: Student Matriculation ID -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="text-label-md font-label-md text-on-surface" for="matric-id">Student Matriculation ID</label>
+<span class="text-[11px] text-outline font-code-mono">STU-####-####</span>
+</div>
+<div class="relative">
+<input class="w-full h-10 px-3 pl-9 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-body-md font-code-mono focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-outline-variant" id="matric-id" placeholder="e.g. STU-2022-8491" required="" type="text" value="STU-2022-8491"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-[18px]" data-icon="pin">pin</span>
+</div>
+</div>
+<!-- Field 3: Portal Password -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="text-label-md font-label-md text-on-surface" for="portal-pwd">Portal Password</label>
+<a class="text-[11px] text-secondary hover:underline" href="#">Forgot Campus SSO Password?</a>
+</div>
+<div class="relative">
+<input class="w-full h-10 px-3 pl-9 pr-9 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" id="portal-pwd" required="" type="password" value="DemoMockPassword2025#"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-[18px]" data-icon="lock">lock</span>
+<button aria-label="Toggle password view" class="absolute right-2.5 top-2.5 text-outline hover:text-on-surface" onclick="togglePasswordVisibility()" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility" id="pwd-icon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Field 4: 2FA Hardware Checkbox -->
+<div class="pt-1">
+<label class="flex items-start gap-2.5 cursor-pointer">
+<input checked="" class="mt-0.5 rounded border-outline text-primary focus:ring-secondary w-4 h-4" type="checkbox"/>
+<div class="text-xs">
+<span class="font-semibold text-on-surface block">Hardware Security Key (FIDO2 / YubiKey) verification</span>
+<span class="text-on-surface-variant">Recommended for high-trust student senate and constitutional referendums.</span>
+</div>
+</label>
+</div>
+<!-- CTA Button -->
+<div class="pt-2">
+<button class="w-full h-11 bg-primary hover:bg-primary-container text-on-primary rounded-lg text-body-md font-semibold transition-colors flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[18px]" data-icon="how_to_reg">how_to_reg</span>
+<span id="sso-btn-text">Authenticate &amp; Verify Campus Registry</span>
+</button>
+</div>
+</form>
+<!-- Help / First time helper box -->
+<div class="mt-auto pt-space-lg">
+<div class="p-space-sm bg-surface-container rounded-lg border border-outline-variant flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="help_center">help_center</span>
+<span class="text-on-surface-variant">First time voting in collegiate elections?</span>
+</div>
+<a class="font-semibold text-secondary hover:underline" href="#">Check Registrar Directory →</a>
+</div>
+</div>
+</section>
+</div>
+<!-- AUDIT TRAIL / CONTRACT SUMMARY DRAWER (Below the Dual Cards) -->
+<div class="mt-space-xl p-space-lg bg-surface-container-lowest border border-outline-variant rounded-lg" id="audit-contracts">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-md border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="rule">rule</span>
+<h3 class="text-headline-md font-headline-md text-on-surface">Cryptographic Verification Specification</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-0.5">
+            Every authentication event issues an ephemeral cryptographic hash matching zero-knowledge commitment schemes.
+          </p>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<span class="text-[11px] text-outline font-label-md block">BALLOT REGISTRY CONTRACT</span>
+<code class="text-xs font-code-mono text-on-surface font-semibold bg-surface-container px-2 py-0.5 rounded border border-outline-variant">0x8a92e105eF9...4f10</code>
+</div>
+<button class="px-2.5 py-1.5 border border-outline-variant rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container-low transition-colors" onclick="copyContract()" type="button">
+<span class="material-symbols-outlined text-[15px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mt-space-md">
+<div class="p-space-sm rounded bg-surface border border-outline-variant">
+<span class="text-[11px] font-label-md text-outline block uppercase tracking-wider">Consensus Engine</span>
+<span class="text-body-md font-semibold text-on-surface mt-0.5 block">PoW Campus Node Network</span>
+<span class="text-xs text-on-surface-variant mt-1 block">5 Independent validator university servers online</span>
+</div>
+<div class="p-space-sm rounded bg-surface border border-outline-variant">
+<span class="text-[11px] font-label-md text-outline block uppercase tracking-wider">ZK-SNARK Protocol</span>
+<span class="text-body-md font-semibold text-on-surface mt-0.5 block">Groth16 Verifier (BN254)</span>
+<span class="text-xs text-on-surface-variant mt-1 block">Zero leak voter anonymity scheme with proof verification</span>
+</div>
+<div class="p-space-sm rounded bg-surface border border-outline-variant">
+<span class="text-[11px] font-label-md text-outline block uppercase tracking-wider">Session Lifetime</span>
+<span class="text-body-md font-semibold text-on-surface mt-0.5 block">15 Minutes Window</span>
+<span class="text-xs text-on-surface-variant mt-1 block">Ephemeral session keys auto-shred after cast confirmation</span>
+</div>
+</div>
+</div>
+</main>
+<!-- SHARED COMPONENT: Footer (Exact mapping from JSON) -->
+<footer class="bg-surface-container-low border-t border-outline-variant w-full mt-auto">
+<div class="w-full px-gutter md:px-gutter-lg max-w-[1200px] mx-auto py-space-lg">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md pb-space-md border-b border-outline-variant">
+<div>
+<span class="text-label-md font-label-md uppercase tracking-wider text-on-surface font-bold">CivicVote Academic Consortium</span>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">
+            © 2025 CivicVote Academic Consortium. Non-custodial cryptographic audit standard compliant.
+          </p>
+</div>
+<!-- Node Status Bar -->
+<div class="flex flex-wrap items-center gap-3 text-xs font-code-mono">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-lowest border border-outline-variant text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Validator [ONLINE]</span>
+</span>
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-lowest border border-outline-variant text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Consensus [STABLE]</span>
+</span>
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container-lowest border border-outline-variant text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>ZK Prover [READY]</span>
+</span>
+</div>
+</div>
+<!-- Links matching JSON exact strings -->
+<div class="flex flex-wrap gap-x-6 gap-y-2 pt-space-md text-body-md font-body-md">
+<a class="text-secondary font-semibold hover:text-primary underline decoration-1" href="#contracts">Smart Contracts</a>
+<a class="text-on-surface-variant font-normal hover:text-primary underline decoration-1" href="#ledger">Ledger Verification</a>
+<a class="text-on-surface-variant font-normal hover:text-primary underline decoration-1" href="#privacy">Voter Privacy Protocol</a>
+<a class="text-on-surface-variant font-normal hover:text-primary underline decoration-1" href="#registrar">Registrar Support</a>
+<a class="text-on-surface-variant font-normal hover:text-primary underline decoration-1" href="#status">System Status</a>
+</div>
+</div>
+</footer>
+<!-- LIGHTWEIGHT INTERACTIVITY SCRIPT (Vanilla JS for Simulator & Form Micro-interactions) -->
+<script>
+    // State Switcher Function for Live Demo Evaluators
+    function switchState(targetStateId) {
+      // Hide all states
+      const states = ['state-disconnected', 'state-connecting', 'state-connected', 'state-wrong-net', 'state-failed'];
+      states.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+
+      // Show selected state
+      const target = document.getElementById(targetStateId);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+
+      // Update Tab Styles
+      const tabMap = {
+        'state-disconnected': 'tab-btn-disconnected',
+        'state-connecting': 'tab-btn-connecting',
+        'state-connected': 'tab-btn-connected',
+        'state-wrong-net': 'tab-btn-wrong-net',
+        'state-failed': 'tab-btn-failed'
+      };
+
+      Object.values(tabMap).forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+          btn.className = 'py-1 px-1.5 text-[11px] font-semibold rounded text-on-surface-variant hover:text-on-surface transition-colors';
+        }
+      });
+
+      const activeBtn = document.getElementById(tabMap[targetStateId]);
+      if (activeBtn) {
+        activeBtn.className = 'py-1 px-1.5 text-[11px] font-semibold rounded bg-surface-container-lowest text-on-surface shadow-xs transition-colors';
+      }
+    }
+
+    // Role Toggle in Pathway B
+    function toggleRole(role) {
+      const voterBtn = document.getElementById('role-voter');
+      const adminBtn = document.getElementById('role-admin');
+      const ssoText = document.getElementById('sso-btn-text');
+
+      if (role === 'voter') {
+        voterBtn.className = 'py-1.5 text-xs font-semibold rounded bg-surface-container-lowest text-on-surface shadow-xs transition-colors flex items-center justify-center gap-1.5';
+        adminBtn.className = 'py-1.5 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-1.5';
+        if (ssoText) ssoText.textContent = 'Authenticate & Verify Campus Registry';
+      } else {
+        adminBtn.className = 'py-1.5 text-xs font-semibold rounded bg-surface-container-lowest text-on-surface shadow-xs transition-colors flex items-center justify-center gap-1.5';
+        voterBtn.className = 'py-1.5 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-1.5';
+        if (ssoText) ssoText.textContent = 'Authenticate Observer / Audit Key';
+      }
+    }
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility() {
+      const input = document.getElementById('portal-pwd');
+      const icon = document.getElementById('pwd-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    // Copy Contract Address
+    function copyContract() {
+      navigator.clipboard.writeText('0x8a92e105eF90B195E6021cD5954B4B172E814f10').then(() => {
+        alert('Contract Address copied to clipboard: 0x8a92e105eF90B195E6021cD5954B4B172E814f10');
+      }).catch(() => {
+        // Fallback
+      });
+    }
+  </script>
+</body></html>

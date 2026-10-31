@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CivicVote - Blockchain Voting System</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..900;1,300..900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-bright": "#f8f9ff",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#213145",
+            "on-error": "#ffffff",
+            "surface-variant": "#d3e4fe",
+            "outline": "#76777d",
+            "secondary-fixed": "#dbe1ff",
+            "on-tertiary-fixed": "#00201d",
+            "on-tertiary-container": "#0c9488",
+            "on-primary-fixed": "#131b2e",
+            "inverse-on-surface": "#eaf1ff",
+            "primary-container": "#131b2e",
+            "surface": "#f8f9ff",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#89f5e7",
+            "secondary-fixed-dim": "#b4c5ff",
+            "surface-container-high": "#dce9ff",
+            "outline-variant": "#c6c6cd",
+            "on-secondary-fixed-variant": "#003ea8",
+            "primary-fixed-dim": "#bec6e0",
+            "on-secondary-container": "#fefcff",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "inverse-primary": "#bec6e0",
+            "primary-fixed": "#dae2fd",
+            "secondary": "#0051d5",
+            "on-primary-container": "#7c839b",
+            "primary": "#000000",
+            "on-surface-variant": "#45464d",
+            "on-secondary-fixed": "#00174b",
+            "surface-dim": "#cbdbf5",
+            "on-primary-fixed-variant": "#3f465c",
+            "surface-container-low": "#eff4ff",
+            "on-background": "#0b1c30",
+            "surface-tint": "#565e74",
+            "background": "#f8f9ff",
+            "surface-container": "#e5eeff",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "surface-container-highest": "#d3e4fe",
+            "on-surface": "#0b1c30",
+            "on-tertiary-fixed-variant": "#005049",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#00201d",
+            "secondary-container": "#316bf3",
+            "tertiary": "#000000",
+            "surface-container-lowest": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter-lg": "2rem",
+            "margin-mobile": "1rem",
+            "gutter": "1.5rem",
+            "margin": "2rem",
+            "gutter-sm": "1rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "headline-xl-mobile": ["Public Sans"],
+            "body-lg": ["Public Sans"],
+            "label-md": ["Public Sans"],
+            "headline-lg-mobile": ["Public Sans"],
+            "body-md": ["Public Sans"],
+            "hash-display": ["JetBrains Mono"],
+            "code-mono": ["JetBrains Mono"],
+            "headline-lg": ["Public Sans"],
+            "headline-xl": ["Public Sans"],
+            "headline-md": ["Public Sans"]
+          },
+          "fontSize": {
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400" }],
+            "hash-display": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+            "code-mono": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "500" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col justify-between selection:bg-secondary-fixed">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-gutter md:px-gutter-lg max-w-[1200px] mx-auto h-16">
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface">CivicVote</span>
+</div>
+<nav class="hidden md:flex space-x-6 ml-6">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Ballot Ledger</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Audit Proofs</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Voter Directory</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-150" href="#">Governance Registry</a>
+</nav>
+</div>
+<div class="flex items-center space-x-3">
+<div class="hidden lg:flex items-center space-x-2 bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+<span class="text-code-mono font-code-mono text-on-surface">0x71C8...39A2</span>
+<span class="text-label-md bg-surface-container px-2 py-0.5 rounded text-on-surface-variant ml-1">Eligible Student</span>
+</div>
+<button class="bg-primary text-on-primary text-body-md font-body-md px-4 py-2 rounded hover:opacity-90 transition-opacity">Connect Wallet</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-[1200px] mx-auto px-gutter md:px-gutter-lg py-space-xl flex-grow">
+<!-- Breadcrumb / Active Navigation Indicator -->
+<div class="flex items-center space-x-2 text-label-md text-on-surface-variant mb-space-md overflow-x-auto whitespace-nowrap">
+<span>Voter Portal</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span>Elections</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span>2026 SGA Presidential Election</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-secondary font-semibold">Official Ballot</span>
+</div>
+<!-- Stepper Header -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-space-xl">
+<div class="flex items-center space-x-3 bg-surface-container-low p-4 rounded-lg border border-outline-variant">
+<div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">✓</div>
+<div>
+<div class="text-label-md text-on-surface-variant">Step 1</div>
+<div class="text-body-lg font-bold text-on-surface">Select Candidate</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 bg-surface-container-high p-4 rounded-lg border-2 border-secondary">
+<div class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center font-bold text-sm">2</div>
+<div>
+<div class="text-label-md text-secondary font-bold">Step 2 (Active)</div>
+<div class="text-body-lg font-bold text-on-surface">Review Selection</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 bg-surface-container-low p-4 rounded-lg border border-outline-variant opacity-70">
+<div class="w-8 h-8 rounded-full bg-outline-variant text-on-surface-variant flex items-center justify-center font-bold text-sm">3</div>
+<div>
+<div class="text-label-md text-on-surface-variant">Step 3</div>
+<div class="text-body-lg font-medium text-on-surface">Cryptographic Mining</div>
+</div>
+</div>
+</div>
+<!-- Double Vote Simulation Banner (Error State Demo) -->
+<div class="mb-space-lg bg-error-container border border-error p-4 rounded-lg flex items-start space-x-3">
+<span class="material-symbols-outlined text-error text-xl mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h4 class="text-body-lg font-bold text-on-error-container">Consensus Warning Notice (Simulation State)</h4>
+<p class="text-body-md text-on-error-container mt-1">Notice: Address 0x71C8...39A2 already recorded a vote in Block #1,399. Double voting is mathematically rejected by the smart contract consensus rule.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<!-- Ballot Selection Area (8 Cols) -->
+<div class="lg:col-span-8 space-y-space-md">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-2">Official Secret Ballot</h2>
+<p class="text-body-lg text-on-surface-variant">Select one candidate to serve as Student Government Association President. Submission generates a signed ECDSA transaction on the Campus PoW Testnet.</p>
+</div>
+<div class="space-y-4">
+<!-- Option 1: Selected -->
+<div class="bg-[#eff6ff] border-2 border-secondary rounded-xl p-5 relative shadow-sm transition-all">
+<div class="absolute top-4 right-4 bg-secondary text-on-secondary px-3 py-1 rounded-full text-label-md flex items-center space-x-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Selected Choice</span>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex items-center h-6 pt-1">
+<div class="w-5 h-5 rounded-full border-2 border-secondary flex items-center justify-center bg-secondary">
+<div class="w-2 h-2 rounded-full bg-white"></div>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex items-center space-x-3 mb-2">
+<img class="w-12 h-12 rounded object-cover border border-outline-variant" data-alt="Close up portrait photograph of Maya Lin, a confident junior computer science and public policy student wearing professional academic attire, smiling warmly in a well-lit modern university lecture hall background. High contrast, official institutional photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5CBndc5w7Ckma1Cp_S35V1FzkkfC9CBo2ofoqsIMt3D6EEePeJfNOY45hpun4whUdHYnITTWmENwEkH6ONndsgujLynl5jQ1QuPqexWsupx9wvho-8ezUmJ9wyp8P9Z8JVju6amnnlTOREdEvAczQUaUPSPqjEyD_Lw-Bs7bRm4SbRkCKxmNd9MQfdrr1sDSzr-qSJ_auKkniOSeBFclK7c_EOdyYrbS-qGh3YuCTAlunEjwc16tPflCSeeg-lYTl77liEw-d5g"/>
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface">Maya Lin</h3>
+<p class="text-body-md text-on-surface-variant font-medium">Junior • Computer Science &amp; Public Policy</p>
+</div>
+</div>
+<div class="bg-white/80 p-3 rounded border border-outline-variant/60 mt-3">
+<span class="text-label-md text-secondary block mb-1">PLATFORM MANIFESTO</span>
+<p class="text-body-md text-on-surface">24/7 Campus Transit Expansion, Textbook Open Access, Lab Tech Grants</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Option 2: Unselected -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:border-outline transition-all">
+<div class="flex items-start space-x-4">
+<div class="flex items-center h-6 pt-1">
+<div class="w-5 h-5 rounded-full border-2 border-outline flex items-center justify-center"></div>
+</div>
+<div class="flex-grow">
+<div class="flex items-center space-x-3 mb-2">
+<img class="w-12 h-12 rounded object-cover border border-outline-variant" data-alt="Portrait photo of Jordan Hayes, a senior mechanical engineering student with short hair, wearing a dark utility jacket inside an engineering lab setting with metallic equipment blurred in the background. Institutional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUArM5r-mXe2NfUsO6vB8SwukxYKV64vsvjXlfJsy2ic1eWKTuAd3Y6AA2qSgBMT6nl7_IUFtW_VK5H1CDnMjvYnTpCkcqCFP9Mis6YIcyQ3MhJmxP5-cnYkM6TMHZq4SUA1rL7DFvRnNzltU7-SZ5em1pS_Ggd2ysbZ2H0b9T9o5oI0OXwQvkkU0TuXO56GrozJfhhMWPqlZmnBsWZpJ0fHyrqiTrsJFpxt4Hm0SN0zQhea6h8nTU5GoJ1eOCd_PyZXosMa3t1w"/>
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface">Jordan Hayes</h3>
+<p class="text-body-md text-on-surface-variant font-medium">Senior • Mechanical Engineering</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded border border-outline-variant/60 mt-3">
+<span class="text-label-md text-on-surface-variant block mb-1">PLATFORM MANIFESTO</span>
+<p class="text-body-md text-on-surface">Student Club Grants, Dining Plan Rollovers, Study Space Access</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Option 3: Unselected -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:border-outline transition-all">
+<div class="flex items-start space-x-4">
+<div class="flex items-center h-6 pt-1">
+<div class="w-5 h-5 rounded-full border-2 border-outline flex items-center justify-center"></div>
+</div>
+<div class="flex-grow">
+<div class="flex items-center space-x-3 mb-2">
+<img class="w-12 h-12 rounded object-cover border border-outline-variant" data-alt="Official headshot of Priya Sharma, a focused junior economics and international relations student, wearing a smart blazer against a neutral grey wall backdrop. Clean lighting and professional student directory style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8CSJMttwEZERPsp8k7A6QVe2aaaYqud6K3Ff8qAyEeCwZkRAcnG_VwYT6dtUn_E_DsnwbfvCdo6LmJTYN4x6n0p8TnfioC4miILqv2XUFwc6h_eqGZw-75IiBuBApx9VRzX2NH64htBMCYfEMZPAdxuVa5liu0suZ_3jZmjMVKojGCD3MVHUnenApNiMXZ27o9yvE1hNpd3GvoemvSB9TO6c4-rRSBHgrFlhkOkweD4QWlDJ7cmogbSY28m2BG1Qn-f9yHNvr7Q"/>
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface">Priya Sharma</h3>
+<p class="text-body-md text-on-surface-variant font-medium">Junior • Economics &amp; International Relations</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded border border-outline-variant/60 mt-3">
+<span class="text-label-md text-on-surface-variant block mb-1">PLATFORM MANIFESTO</span>
+<p class="text-body-md text-on-surface">Fee Audit Transparency, Student Mental Health Counseling</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Review & Transaction Drawer (4 Cols) -->
+<div class="lg:col-span-4 space-y-space-md">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant sticky top-24">
+<h3 class="text-headline-md font-headline-md text-on-surface mb-4 pb-2 border-b border-outline-variant">Review &amp; Cryptographic Authorization</h3>
+<div class="space-y-4 mb-6">
+<div>
+<span class="text-label-md text-on-surface-variant block mb-1">SELECTED BALLOT</span>
+<p class="text-body-lg font-bold text-on-surface">Maya Lin</p>
+<p class="text-body-md text-on-surface-variant">Progressive Campus Action</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded border border-outline-variant">
+<span class="text-label-md text-on-surface-variant block mb-1">TRANSACTION ESTIMATE</span>
+<p class="text-code-mono font-code-mono text-on-surface text-xs">Gas Fee: 0.000 ETH (College demo node subsidizes network fees).</p>
+<p class="text-code-mono font-code-mono text-on-surface text-xs mt-2">Address 0x71C8...39A2 will sign payload SHA-256(election_id: 1, candidate_id: 1, nonce: 42).</p>
+</div>
+<div class="bg-error-container/40 p-3 rounded border border-error/30">
+<span class="text-label-md text-error block mb-1 font-bold">IRREVERSIBILITY WARNING</span>
+<p class="text-body-md text-on-error-container text-xs">Once submitted to the campus blockchain, this ballot cannot be changed, canceled, or re-cast.</p>
+</div>
+</div>
+<div class="space-y-3">
+<button class="w-full bg-primary text-on-primary py-3 px-4 rounded font-medium text-body-lg hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span>Submit Signed Ballot</span>
+</button>
+<button class="w-full bg-surface-container-lowest text-on-surface border border-outline-variant py-2.5 px-4 rounded font-medium text-body-md hover:bg-surface-container-low transition-colors">
+              Change Selection
+            </button>
+<button class="w-full text-error py-2 px-4 rounded font-medium text-body-md hover:bg-error-container/20 transition-colors">
+              Cancel &amp; Return to Dashboard
+            </button>
+</div>
+<!-- Transaction Lifecycle Live Demo Box -->
+<div class="mt-6 pt-4 border-t border-outline-variant">
+<span class="text-label-md text-on-surface-variant block mb-2">LIVE TRANSACTION LIFECYCLE</span>
+<div class="space-y-2 text-xs font-code-mono">
+<div class="flex items-center space-x-2 text-emerald-700 bg-emerald-50 p-2 rounded">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span>1. Ready for ECDSA Signature</span>
+</div>
+<div class="flex items-center space-x-2 text-on-surface-variant bg-surface-container-low p-2 rounded opacity-60">
+<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+<span>2. Awaiting wallet confirmation...</span>
+</div>
+<div class="flex items-center space-x-2 text-on-surface-variant bg-surface-container-low p-2 rounded opacity-60">
+<span class="material-symbols-outlined text-sm">pending</span>
+<span>3. Mining into Block #1,403...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant mt-space-xl">
+<div class="w-full px-gutter md:px-gutter-lg max-w-[1200px] mx-auto py-space-lg flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="text-label-md uppercase tracking-wider text-on-surface font-bold">
+        CivicVote Academic Consortium
+      </div>
+<div class="flex flex-wrap gap-6 text-on-surface-variant text-body-md">
+<a class="hover:text-primary underline decoration-1" href="#">Smart Contracts</a>
+<a class="hover:text-primary underline decoration-1" href="#">Ledger Verification</a>
+<a class="hover:text-primary underline decoration-1" href="#">Voter Privacy Protocol</a>
+<a class="hover:text-primary underline decoration-1" href="#">Registrar Support</a>
+<a class="hover:text-primary underline decoration-1" href="#">System Status</a>
+</div>
+<div class="text-hash-display font-hash-display text-on-surface-variant text-right">
+        © 2025 CivicVote Academic Consortium. Non-custodial cryptographic audit standard compliant.
+      </div>
+</div>
+</footer>
+</body></html>

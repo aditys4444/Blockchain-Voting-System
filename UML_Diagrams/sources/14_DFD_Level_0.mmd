@@ -1,0 +1,8 @@
+graph LR
+    Admin[Administrator] -->|Election Details & Candidates| System((0.0 Decentralized Blockchain Voting System))
+    Voter[Registered Voter] -->|Credentials & Encrypted Vote| System
+    System -->|Cryptographic QR Receipt| Voter
+    Observer[Independent Observer] -->|Tally & Hash Audit Requests| System
+    System -->|Live Tallies & Chain Proofs| Observer
+    System <-->|Read / Write Records| DB[(D1: SQLite Database)]
+    System <-->|Append / Read Blocks| Chain[(D2: Blockchain Ledger)]

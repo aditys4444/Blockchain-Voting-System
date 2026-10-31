@@ -1,0 +1,35 @@
+graph TD
+    subgraph Presentation Tier
+        UI[VoterDashboard / ElectionStudio / ObserverPortal]
+        QR[QRCodeModal Component]
+    end
+
+    subgraph Application Tier
+        AuthAPI[Auth Router & Bcrypt Service]
+        VoteAPI[Vote Processing Router]
+        AdminAPI[Election Studio Router]
+        AIComponent[AI Fraud Radar Anomaly Engine]
+    end
+
+    subgraph Cryptographic Core
+        PoWMiner[Proof-of-Work Mining Loop]
+        MerkleTree[SHA-256 Merkle Root Engine]
+        ECDSASigner[SECP256R1 Digital Signer]
+    end
+
+    subgraph Persistence Tier
+        DBORM[SQLAlchemy 2.0 ORM Engine]
+        SQLiteDB[(SQLite 3 Database File)]
+        ChainLedger[(Immutable Blockchain Store)]
+    end
+
+    UI --> AuthAPI
+    UI --> VoteAPI
+    UI --> AdminAPI
+    VoteAPI --> PoWMiner
+    PoWMiner --> MerkleTree
+    PoWMiner --> ECDSASigner
+    VoteAPI --> AIComponent
+    VoteAPI --> DBORM
+    PoWMiner --> ChainLedger
+    DBORM --> SQLiteDB

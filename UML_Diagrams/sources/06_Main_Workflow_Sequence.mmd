@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    actor Voter as Voter Dashboard
+    participant API as Vote Router (/votes/cast)
+    participant AES as Crypto Service (AES-256)
+    participant Miner as Blockchain Miner (PoW)
+    participant ECDSA as Digital Signer (SECP256R1)
+    participant DB as SQLite Database
+
+    Voter->>API: POST /api/v1/votes/cast {election_id, candidate_id}
+    API->>DB: Check if Voter already voted
+    DB-->>API: Not Voted (Valid)
+    API->>AES: encrypt_vote(candidate_id, secret_key)
+    AES-->>API: Ciphertext + Auth Tag
+    API->>Miner: mine_block(transactions, diff=4)
+    Miner->>Miner: Calculate SHA-256 Merkle Root
+    Miner->>ECDSA: sign_block_header(block_hash)
+    ECDSA-->>Miner: DER-Encoded Signature
+    Miner-->>API: Mined Block (Nonce, BlockHash, TxHash)
+    API->>DB: INSERT INTO vote_receipts
+    DB-->>API: Commit OK
+    API-->>Voter: 200 OK -> Render QRCodeModal with Receipt

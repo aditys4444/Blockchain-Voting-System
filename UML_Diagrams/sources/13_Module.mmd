@@ -1,0 +1,36 @@
+graph TD
+    subgraph Root [blockchain-voting-system]
+        subgraph Frontend [frontend/src/]
+            F_Comp[components/]
+            F_Pages[pages/]
+            F_Context[context/]
+            F_Services[services/api.ts]
+        end
+
+        subgraph Backend [backend/app/]
+            B_API[api/]
+            B_Core[core/]
+            B_Models[models/]
+            B_Services[services/]
+            B_Main[main.py]
+        end
+
+        subgraph Blockchain [backend/blockchain/]
+            BC_Chain[chain.py]
+            BC_Block[block.py]
+            BC_Crypto[cryptography.py]
+            BC_Wallet[wallet.py]
+        end
+
+        subgraph Storage [backend/storage/]
+            DB_File[(voting_system.db)]
+        end
+    end
+
+    F_Services --> B_API
+    B_API --> B_Services
+    B_Services --> BC_Chain
+    BC_Chain --> BC_Block
+    BC_Chain --> BC_Crypto
+    B_Services --> B_Models
+    B_Models --> DB_File

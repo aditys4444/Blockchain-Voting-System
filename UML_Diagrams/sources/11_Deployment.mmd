@@ -1,0 +1,29 @@
+graph TB
+    subgraph ClientDevice [Client Device Workstation / Smartphone]
+        Browser[Modern Web Browser]
+        SPA[React 19 Single Page App]
+        LocalStorage[(LocalStorage Fallback Store)]
+    end
+
+    subgraph VercelEdge [Vercel Global Edge CDN]
+        CDN[Edge Reverse Proxy & Static Cache]
+        Rewrites[Client SPA URL Rewrites]
+    end
+
+    subgraph CloudServer [Render Cloud Linux Container]
+        ASGI[Uvicorn ASGI Worker Pool]
+        FastAPI[FastAPI Application Backend]
+        BlockchainCore[Cryptographic Ledger Engine]
+        AIRadar[AI Fraud Radar Service]
+    end
+
+    subgraph StorageNode [Persistent Database Volume]
+        SQLite[(SQLite 3 Database WAL Mode)]
+    end
+
+    Browser --> CDN
+    CDN --> FastAPI
+    FastAPI --> BlockchainCore
+    FastAPI --> AIRadar
+    FastAPI --> SQLite
+    Browser -.->|Offline Fallback| LocalStorage
