@@ -29,24 +29,12 @@ const RequireAuth: React.FC<{ children: React.ReactNode; allowedRoles?: string[]
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       <Navbar />
       <div className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6 ${user ? 'pb-20 md:pb-6' : ''}`}>
         {user && <Sidebar />}
         <main className="flex-1 min-w-0">{children}</main>
       </div>
-    </div>
-  );
-};
-
-const RedesignShowcasePage: React.FC = () => {
-  return (
-    <div className="w-full h-[calc(100vh-4rem)]">
-      <iframe
-        src="/stitch_redesign/index.html"
-        title="CivicVote Redesign Showcase"
-        className="w-full h-full border-none rounded-2xl shadow-xl"
-      />
     </div>
   );
 };
@@ -58,13 +46,11 @@ export function App() {
         <BrowserRouter>
           <MainLayout>
             <Routes>
-              {/* Redesign Routes */}
-              <Route path="/redesign" element={<RedesignShowcasePage />} />
-              <Route path="/stitch" element={<RedesignShowcasePage />} />
-
-              {/* Public Routes */}
+              {/* Public Authentication */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+
+              {/* Public Ledger & Observer Auditing */}
               <Route path="/explorer" element={<BlockchainExplorer />} />
               <Route path="/observer" element={<ObserverDashboard />} />
               <Route path="/ai-fraud" element={<AIFraudDashboard />} />

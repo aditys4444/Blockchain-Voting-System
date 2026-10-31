@@ -8,16 +8,14 @@ import {
   KeyRound,
   Mail,
   ArrowRight,
-  Sparkles,
   Wallet,
   CheckCircle2,
   AlertTriangle,
   XCircle,
   RefreshCw,
-  ExternalLink,
-  Layers,
   Lock,
-  Cpu
+  Cpu,
+  UserCheck
 } from 'lucide-react';
 
 type WalletState = 'disconnected' | 'connecting' | 'connected' | 'wrong-network' | 'failed';
@@ -29,9 +27,9 @@ export const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Web3 Wallet Simulation State (Screen 1 Spec)
+  // Web3 Wallet Simulation State
   const [walletState, setWalletState] = useState<WalletState>('disconnected');
-  const [walletAddress, setWalletAddress] = useState('0x71C8392a5F92B30291912fAA79b4D32890C2392F');
+  const [walletAddress] = useState('0x71C8392a5F92B30291912fAA79b4D32890C2392F');
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -110,7 +108,7 @@ export const Login: React.FC = () => {
         else navigate('/observer');
         return;
       }
-      setError(err.response?.data?.detail || 'Invalid credentials');
+      setError(err.response?.data?.detail || 'Invalid credentials. Use demo accounts below or check input.');
     } finally {
       setLoading(false);
     }
@@ -150,7 +148,7 @@ export const Login: React.FC = () => {
     setWalletState('connecting');
     setTimeout(() => {
       setWalletState('connected');
-    }, 900);
+    }, 700);
   };
 
   const proceedWithConnectedWallet = () => {
@@ -158,104 +156,72 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[88vh] flex flex-col justify-center py-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[82vh] flex flex-col justify-center py-6 px-4 sm:px-6 lg:px-8">
       
-      {/* Top Banner: Civic Redesign Showcase Notice */}
-      <div className="max-w-xl w-full mx-auto mb-6">
-        <a
-          href="/stitch_redesign/index.html"
-          className="flex items-center justify-between p-4 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-blue-500/80 text-white shadow-xl transition-all group"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0 font-bold">
-              <Layers className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm text-slate-100 group-hover:text-blue-300 transition-colors">
-                  CivicVote Redesign Suite (8 Screens)
-                </span>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                  Interactive
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Voter Dashboard, Ballot, Cryptographic Receipt, Admin &amp; Mobile
-              </p>
-            </div>
-          </div>
-          <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform shrink-0" />
-        </a>
-      </div>
-
       {/* Main Login / Wallet Card */}
-      <div className="max-w-xl w-full mx-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+      <div className="max-w-lg w-full mx-auto civic-card overflow-hidden">
         
-        {/* Civic Header Bar */}
-        <div className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+        {/* Civic Header */}
+        <div className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 px-6 py-5">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-slate-900 dark:bg-slate-100 flex items-center justify-center text-white dark:text-slate-900 shadow-sm">
-              <Shield className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-lg bg-slate-900 dark:bg-blue-600 flex items-center justify-center text-white shrink-0">
+              <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">
-                CivicVote Portal
+                University Election Portal
               </h1>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                COLLEGE DEMO • SECP256R1 CRYPTOGRAPHIC LEDGER
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                SECURE IDENTITY AUTHENTICATION &amp; BALLOT ACCESS
               </p>
             </div>
-          </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Chain ID: 1337</span>
           </div>
         </div>
 
         {/* Tab Selector: Institutional SSO vs Web3 Wallet */}
-        <div className="grid grid-cols-2 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-950/40 text-xs font-semibold">
+        <div className="grid grid-cols-2 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-950/60 text-xs font-semibold">
           <button
             type="button"
             onClick={() => setActiveTab('sso')}
             className={`py-3 px-4 flex items-center justify-center gap-2 border-b-2 transition-colors ${
               activeTab === 'sso'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900 font-bold'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
             <Mail className="w-4 h-4" />
-            <span>Institutional SSO / Email</span>
+            <span>Campus ID / Email</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('wallet')}
             className={`py-3 px-4 flex items-center justify-center gap-2 border-b-2 transition-colors ${
               activeTab === 'wallet'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900 font-bold'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
             <Wallet className="w-4 h-4" />
-            <span>Web3 Wallet Connection</span>
+            <span>Web3 Wallet Key</span>
           </button>
         </div>
 
         {/* Card Body */}
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-6 sm:p-7 space-y-6">
 
           {error && (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-rose-700 dark:text-rose-400 text-xs font-medium flex items-center gap-2">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-lg text-rose-700 dark:text-rose-400 text-xs font-medium flex items-center gap-2">
               <XCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {activeTab === 'sso' ? (
-            /* Institutional SSO & Password Form */
+            /* Institutional Credentials Form */
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  University Email or Username
+                  Institutional Email or Username
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
@@ -265,7 +231,7 @@ export const Login: React.FC = () => {
                     value={usernameOrEmail}
                     onChange={(e) => setUsernameOrEmail(e.target.value)}
                     placeholder="voter1@voting.edu or admin"
-                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   />
                 </div>
               </div>
@@ -282,7 +248,7 @@ export const Login: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   />
                 </div>
               </div>
@@ -290,18 +256,18 @@ export const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold text-sm rounded-xl shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? 'Authenticating...' : 'Sign In with Credentials'}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
           ) : (
-            /* Web3 Wallet Connection Portal (Screen 1 Specification) */
-            <div className="space-y-5">
+            /* Web3 Wallet Connection Portal */
+            <div className="space-y-4">
               
-              {/* Wallet State Selector / Evaluator Tool */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs space-y-2">
+              {/* Wallet State Simulator */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs space-y-2">
                 <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 font-mono text-[11px]">
                   <span>SIMULATE WALLET STATE:</span>
                   <span className="uppercase font-bold text-blue-600 dark:text-blue-400">{walletState}</span>
@@ -326,35 +292,35 @@ export const Login: React.FC = () => {
 
               {/* State 1: Disconnected */}
               {walletState === 'disconnected' && (
-                <div className="p-5 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl text-center space-y-3">
-                  <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
-                    <Wallet className="w-6 h-6" />
+                <div className="p-5 border border-dashed border-slate-300 dark:border-slate-700 rounded-lg text-center space-y-3">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                    <Wallet className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Wallet Disconnected</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                      Connect your MetaMask, Coinbase Wallet, or Hardware Key to sign voting transactions on PoW Testnet.
+                    <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100">Wallet Disconnected</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
+                      Connect your MetaMask or Hardware Key to sign voting transactions on PoW Testnet (Chain ID 1337).
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={connectWalletSimulation}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-md transition-all inline-flex items-center gap-2"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors inline-flex items-center gap-1.5"
                   >
                     <Wallet className="w-4 h-4" />
-                    <span>Connect MetaMask / Web3 Key</span>
+                    <span>Connect MetaMask</span>
                   </button>
                 </div>
               )}
 
               {/* State 2: Connecting */}
               {walletState === 'connecting' && (
-                <div className="p-5 border border-blue-200 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl text-center space-y-3">
-                  <RefreshCw className="w-8 h-8 mx-auto text-blue-600 dark:text-blue-400 animate-spin" />
+                <div className="p-5 border border-blue-200 dark:border-blue-900/60 bg-blue-50/40 dark:bg-blue-950/20 rounded-lg text-center space-y-3">
+                  <RefreshCw className="w-6 h-6 mx-auto text-blue-600 dark:text-blue-400 animate-spin" />
                   <div>
-                    <h3 className="text-sm font-bold text-blue-900 dark:text-blue-200">Requesting Wallet Signature</h3>
+                    <h3 className="text-xs font-bold text-blue-900 dark:text-blue-200">Awaiting Signature</h3>
                     <p className="text-xs text-blue-700/80 dark:text-blue-300/80 mt-1 font-mono">
-                      Awaiting user authorization for eth_requestAccounts...
+                      Requesting eth_requestAccounts authorization...
                     </p>
                   </div>
                 </div>
@@ -362,17 +328,17 @@ export const Login: React.FC = () => {
 
               {/* State 3: Connected */}
               {walletState === 'connected' && (
-                <div className="p-5 border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 rounded-xl space-y-3">
+                <div className="p-4 border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 rounded-lg space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
+                    <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>Wallet Authorized &amp; Verified</span>
+                      <span>Wallet Verified &amp; Whitelisted</span>
                     </div>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200 border border-emerald-300/50">
                       Eligible Voter
                     </span>
                   </div>
-                  <div className="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-emerald-200 dark:border-emerald-800/60 font-mono text-xs space-y-1">
+                  <div className="p-2.5 bg-white dark:bg-slate-900 rounded border border-emerald-200 dark:border-emerald-800/60 font-mono text-xs space-y-1">
                     <div className="text-slate-500 dark:text-slate-400 text-[10px]">ECDSA PUBLIC ADDRESS:</div>
                     <div className="font-bold text-slate-800 dark:text-slate-200 truncate">{walletAddress}</div>
                     <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between pt-1">
@@ -383,9 +349,9 @@ export const Login: React.FC = () => {
                   <button
                     type="button"
                     onClick={proceedWithConnectedWallet}
-                    className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                    className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5"
                   >
-                    <span>Proceed to Voter Ballot Dashboard</span>
+                    <span>Proceed to Active Ballot</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -393,18 +359,18 @@ export const Login: React.FC = () => {
 
               {/* State 4: Wrong Network */}
               {walletState === 'wrong-network' && (
-                <div className="p-5 border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 rounded-xl space-y-3">
-                  <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300 text-xs font-bold">
+                <div className="p-4 border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 rounded-lg space-y-2">
+                  <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 text-xs font-bold">
                     <AlertTriangle className="w-4 h-4" />
-                    <span>Wrong Network Detected (Chain ID: 1 - Ethereum Mainnet)</span>
+                    <span>Wrong Network (Chain ID 1 - Ethereum Mainnet)</span>
                   </div>
                   <p className="text-xs text-amber-800 dark:text-amber-200">
-                    CivicVote elections run on PoW Testnet (Chain ID 1337). Your wallet must switch networks to sign transactions.
+                    CivicVote operates on PoW Testnet (Chain ID 1337). Switch network to authorize transactions.
                   </p>
                   <button
                     type="button"
                     onClick={() => setWalletState('connected')}
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs rounded-xl shadow transition-all inline-flex items-center gap-2"
+                    className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs rounded-lg transition-colors inline-flex items-center gap-1.5"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Switch to PoW Testnet (1337)</span>
@@ -412,31 +378,30 @@ export const Login: React.FC = () => {
                 </div>
               )}
 
-              {/* State 5: Connection Failed */}
+              {/* State 5: Failed */}
               {walletState === 'failed' && (
-                <div className="p-5 border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 rounded-xl space-y-3">
-                  <div className="flex items-center gap-2 text-rose-700 dark:text-rose-400 text-xs font-bold">
+                <div className="p-4 border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 rounded-lg space-y-2">
+                  <div className="flex items-center gap-1.5 text-rose-700 dark:text-rose-400 text-xs font-bold">
                     <XCircle className="w-4 h-4" />
-                    <span>Connection Request Rejected</span>
+                    <span>Connection Request Denied</span>
                   </div>
                   <p className="text-xs text-rose-800 dark:text-rose-300">
-                    The signature request was declined in MetaMask or the session timed out. Check your wallet extension and retry.
+                    The signature request was declined or timed out.
                   </p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <button
                       type="button"
                       onClick={connectWalletSimulation}
-                      className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs rounded-xl shadow transition-all inline-flex items-center gap-2"
+                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-lg transition-colors"
                     >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Retry Connection</span>
+                      Retry Connection
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveTab('sso')}
-                      className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-xl hover:bg-slate-50 transition-all"
+                      className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-lg hover:bg-slate-50 transition-colors"
                     >
-                      Use SSO Password Instead
+                      Use Campus Password
                     </button>
                   </div>
                 </div>
@@ -449,8 +414,8 @@ export const Login: React.FC = () => {
           <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                <span>INSTANT DEMO CREDENTIALS:</span>
+                <UserCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span>DEMO CREDENTIALS:</span>
               </span>
               <span>1-CLICK SIGN IN</span>
             </div>
@@ -459,9 +424,9 @@ export const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleDirectLogin('admin', 'Admin123!')}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors text-left group"
+                className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left"
               >
-                <div className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-blue-600">
+                <div className="font-bold text-xs text-slate-900 dark:text-slate-100">
                   Administrator
                 </div>
                 <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">admin / Admin123!</div>
@@ -470,9 +435,9 @@ export const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleDirectLogin('voter1', 'Voter123!')}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors text-left group"
+                className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left"
               >
-                <div className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-emerald-600">
+                <div className="font-bold text-xs text-slate-900 dark:text-slate-100">
                   Student Voter
                 </div>
                 <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">voter1 / Voter123!</div>
@@ -481,9 +446,9 @@ export const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleDirectLogin('observer1', 'Observer123!')}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors text-left group"
+                className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left"
               >
-                <div className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-cyan-600">
+                <div className="font-bold text-xs text-slate-900 dark:text-slate-100">
                   Public Observer
                 </div>
                 <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">observer1 / Obs123!</div>
@@ -492,9 +457,9 @@ export const Login: React.FC = () => {
           </div>
 
           {/* Registration Link */}
-          <div className="text-center pt-2">
+          <div className="text-center pt-1">
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              New college voter?{' '}
+              New campus voter?{' '}
               <Link to="/register" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
                 Register voter identity &amp; keypair
               </Link>
@@ -504,10 +469,10 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Security & Ledger Disclaimer */}
-        <div className="bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 gap-2 font-mono">
+        <div className="bg-slate-50 dark:bg-slate-950/80 border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 gap-2 font-mono">
           <div className="flex items-center gap-1.5">
             <Lock className="w-3.5 h-3.5 text-slate-400" />
-            <span>Ballot Secrecy Guarantee: Selection hidden on receipts</span>
+            <span>Ballot Secrecy: Selections encrypted</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Cpu className="w-3.5 h-3.5 text-slate-400" />

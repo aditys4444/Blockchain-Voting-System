@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Election } from '../types';
-import { Plus, UserPlus, Upload, CheckCircle2 } from 'lucide-react';
+import { Plus, UserPlus, CheckCircle2, AlertCircle, X, Vote, Users, Calendar, ArrowRight } from 'lucide-react';
 
 const DEFAULT_ELECTIONS: Election[] = [
   {
     id: 1,
-    title: "General Presidential Election 2026",
-    description: "Official decentralised blockchain election for 2026 leadership.",
+    title: "Student Government Presidential Election 2025–2026",
+    description: "Annual university-wide executive leadership election conducted via cryptographic decentralized ledger.",
     status: "active",
     start_time: new Date().toISOString(),
     end_time: new Date(Date.now() + 7 * 86400000).toISOString(),
@@ -18,8 +18,8 @@ const DEFAULT_ELECTIONS: Election[] = [
         id: 101,
         election_id: 1,
         name: "Dr. Alex Rivera",
-        party: "Progressive Tech Party",
-        manifesto: "Focusing on AI innovation, digital rights, and sustainable green technology.",
+        party: "Progressive Student Alliance",
+        manifesto: "Expanding research funding, campus digital sovereignty, open educational resources, and sustainable infrastructure.",
         avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
         vote_count: 0
       },
@@ -27,8 +27,8 @@ const DEFAULT_ELECTIONS: Election[] = [
         id: 102,
         election_id: 1,
         name: "Elena Rostova",
-        party: "Global Unity Alliance",
-        manifesto: "Transparency, decentralised governance, economic prosperity, and privacy protection.",
+        party: "Academic Integrity Coalition",
+        manifesto: "Transparent governance, student fee reductions, universal library access, and anonymous cryptographic polling.",
         avatar_url: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
         vote_count: 0
       }
@@ -47,10 +47,6 @@ export const ElectionManagement: React.FC = () => {
   const [candName, setCandName] = useState('');
   const [candParty, setCandParty] = useState('');
   const [candManifesto, setCandManifesto] = useState('');
-
-  // CSV Voter Import State
-  const [csvFile, setCsvFile] = useState<File | null>(null);
-  const [importResult, setImportResult] = useState<string>('');
 
   const getStoredElections = (): Election[] => {
     try {
@@ -106,7 +102,6 @@ export const ElectionManagement: React.FC = () => {
       };
       const updated = [newElection, ...current];
       saveStoredElections(updated);
-      setElections(updated);
     }
 
     setTitle('');
@@ -127,23 +122,20 @@ export const ElectionManagement: React.FC = () => {
       });
     } catch (err) {
       const current = getStoredElections();
-      const updated = current.map(el => {
-        if (el.id === selectedElectionId) {
-          const newCand = {
-            id: Date.now(),
-            election_id: selectedElectionId,
-            name: candName,
-            party: candParty || 'Independent',
-            manifesto: candManifesto || 'Promoting institutional excellence and transparent governance.',
-            avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(candName)}`,
-            vote_count: 0
-          };
-          return { ...el, candidates: [...(el.candidates || []), newCand] };
-        }
-        return el;
-      });
-      saveStoredElections(updated);
-      setElections(updated);
+      const target = current.find(e => e.id === selectedElectionId);
+      if (target) {
+        if (!target.candidates) target.candidates = [];
+        target.candidates.push({
+          id: Date.now(),
+          election_id: selectedElectionId,
+          name: candName,
+          party: candParty || 'Independent',
+          manifesto: candManifesto || 'Official platform',
+          avatar_url: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80`,
+          vote_count: 0
+        });
+        saveStoredElections(current);
+      }
     }
 
     setCandName('');
@@ -153,158 +145,126 @@ export const ElectionManagement: React.FC = () => {
     fetchElections();
   };
 
-  const handleStatusChange = async (electionId: number, newStatus: any) => {
-    try {
-      await api.put(`/elections/${electionId}/status?status_val=${newStatus}`);
-    } catch (err) {
-      const current = getStoredElections();
-      const updated = current.map(el => el.id === electionId ? { ...el, status: newStatus } : el);
-      saveStoredElections(updated);
-      setElections(updated);
-    }
-    fetchElections();
-  };
-
-  const handleCsvImport = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!csvFile) return;
-
-    try {
-      const formData = new FormData();
-      formData.append('file', csvFile);
-      const res = await api.post('/admin/import-voters-csv', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      setImportResult(res.data.message);
-    } catch (err) {
-      setImportResult(`Successfully imported voter accounts from ${csvFile.name}`);
-    }
-    setCsvFile(null);
+  const toggleElectionStatus = (id: number) => {
+    const current = getStoredElections();
+    const updated: Election[] = current.map(e => {
+      if (e.id === id) {
+        const nextStatus: 'active' | 'closed' = e.status === 'active' ? 'closed' : 'active';
+        return { ...e, status: nextStatus };
+      }
+      return e;
+    });
+    saveStoredElections(updated);
+    setElections(updated);
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800">
+      {/* Header Banner */}
+      <div className="civic-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-mono text-cyan-500 uppercase tracking-widest font-semibold">ADMIN MANAGEMENT</span>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Election & Candidate Studio</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Create elections, register candidates, and manage voter eligibility</p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold">
+              CONTEST GOVERNANCE
+            </span>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+              ELECTION &amp; CANDIDATE ROSTER
+            </span>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-1">
+            Elections &amp; Ballot Setup
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+            Create new election contests, manage accredited candidate profiles, open or close voting windows, and audit candidate eligibility.
+          </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors flex items-center gap-1.5 shrink-0"
         >
           <Plus className="w-4 h-4" />
-          Create New Election
+          <span>Create New Election</span>
         </button>
       </div>
 
-      {/* CSV Bulk Enrollment Section */}
-      <div className="p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-cyan-500/10 rounded-xl text-cyan-500">
-            <Upload className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">Bulk Voter Enrollment (CSV Upload)</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Import hundreds of student/voter accounts instantly via CSV file</p>
-          </div>
-        </div>
-
-        <form onSubmit={handleCsvImport} className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-          <input
-            type="file"
-            accept=".csv"
-            onChange={(e) => setCsvFile(e.target.files?.[0] || null)}
-            className="block w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-cyan-500 hover:file:bg-cyan-500/10 cursor-pointer"
-          />
-          <button
-            type="submit"
-            disabled={!csvFile}
-            className="w-full sm:w-auto px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold rounded-xl disabled:opacity-40 transition-opacity whitespace-nowrap"
-          >
-            Upload & Enroll
-          </button>
-        </form>
-
-        {importResult && (
-          <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-500 text-xs font-semibold flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4" />
-            {importResult}
-          </div>
-        )}
-      </div>
-
       {/* Elections List */}
-      <div className="space-y-6">
+      <div className="space-y-5">
         {elections.map((ele) => (
-          <div key={ele.id} className="p-6 glass-card rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6">
+          <div key={ele.id} className="civic-card p-6 space-y-5">
             
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-3">
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{ele.title}</h3>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider ${
-                    ele.status === 'active' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30' :
-                    ele.status === 'draft' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30' :
-                    'bg-slate-500/10 text-slate-500 border border-slate-500/30'
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-bold ${
+                    ele.status === 'active'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
                   }`}>
-                    {ele.status}
+                    {ele.status === 'active' ? '● VOTING ACTIVE' : '○ CONTEST CLOSED'}
                   </span>
+                  <span className="text-xs text-slate-400 font-mono">Contest #{ele.id}</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{ele.description}</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                  {ele.title}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-2xl">
+                  {ele.description}
+                </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                {ele.status === 'draft' && (
-                  <button
-                    onClick={() => handleStatusChange(ele.id, 'active')}
-                    className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 text-xs font-semibold rounded-xl border border-emerald-500/30 transition-colors"
-                  >
-                    Activate Voting
-                  </button>
-                )}
-                {ele.status === 'active' && (
-                  <button
-                    onClick={() => handleStatusChange(ele.id, 'closed')}
-                    className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs font-semibold rounded-xl border border-rose-500/30 transition-colors"
-                  >
-                    Close Election
-                  </button>
-                )}
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setSelectedElectionId(ele.id)}
-                  className="px-3 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 text-xs font-semibold rounded-xl border border-cyan-500/30 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
-                  Add Candidate
+                  <span>Add Candidate</span>
+                </button>
+                <button
+                  onClick={() => toggleElectionStatus(ele.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                    ele.status === 'active'
+                      ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 hover:bg-amber-100'
+                      : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100'
+                  }`}
+                >
+                  {ele.status === 'active' ? 'Close Voting' : 'Open Voting'}
                 </button>
               </div>
             </div>
 
-            {/* Candidates Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              {ele.candidates && ele.candidates.length > 0 ? (
-                ele.candidates.map((cand) => (
-                  <div key={cand.id} className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-start gap-4">
-                    <img
-                      src={cand.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
-                      alt={cand.name}
-                      className="w-12 h-12 rounded-full object-cover border border-cyan-500/30 shadow-md"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">{cand.name}</h4>
-                      <p className="text-xs font-semibold text-cyan-500">{cand.party}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{cand.manifesto}</p>
-                    </div>
-                  </div>
-                ))
+            {/* Candidates Roster */}
+            <div>
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono uppercase mb-3">
+                Approved Candidates ({ele.candidates?.length || 0})
+              </div>
+
+              {(!ele.candidates || ele.candidates.length === 0) ? (
+                <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 text-center text-xs text-slate-500">
+                  No candidates accredited for this contest yet. Click "Add Candidate" above.
+                </div>
               ) : (
-                <div className="col-span-2 p-6 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-                  No candidates registered yet for this election. Click "Add Candidate" above to add one.
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {ele.candidates.map((cand) => (
+                    <div key={cand.id} className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg flex items-start gap-3">
+                      <img
+                        src={cand.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
+                        alt={cand.name}
+                        className="w-10 h-10 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 truncate">{cand.name}</h4>
+                          <span className="text-[10px] font-mono text-slate-500">Candidate #{cand.id}</span>
+                        </div>
+                        <p className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">{cand.party}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{cand.manifesto}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -313,46 +273,61 @@ export const ElectionManagement: React.FC = () => {
         ))}
       </div>
 
-      {/* Create Election Modal */}
+      {/* Modal: Create Election */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Create New Election</h2>
-            <form onSubmit={handleCreateElection} className="space-y-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
+          <div className="civic-card max-w-md w-full p-6 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <Vote className="w-4 h-4 text-blue-600" />
+                <span>Create New Election Contest</span>
+              </h3>
+              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateElection} className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Title</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Election Title
+                </label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Student Council Election 2026"
-                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="e.g. Faculty Senate General Election 2026"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Description</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Description &amp; Scope
+                </label>
                 <textarea
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Details regarding this election..."
-                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="Explain eligibility, term limits, and voting criteria..."
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
                 />
               </div>
-              <div className="flex justify-end gap-3 pt-2">
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  className="px-3 py-1.5 text-xs text-slate-600 border rounded-lg hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-cyan-500/20"
+                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg"
                 >
-                  Save & Launch
+                  Publish Election Contest
                 </button>
               </div>
             </form>
@@ -360,57 +335,74 @@ export const ElectionManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Add Candidate Modal */}
+      {/* Modal: Add Candidate */}
       {selectedElectionId && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Add Candidate Nomination</h2>
-            <form onSubmit={handleAddCandidate} className="space-y-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
+          <div className="civic-card max-w-md w-full p-6 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-blue-600" />
+                <span>Accredit Candidate Profile</span>
+              </h3>
+              <button onClick={() => setSelectedElectionId(null)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCandidate} className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Candidate Name</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Candidate Full Name
+                </label>
                 <input
                   type="text"
                   required
                   value={candName}
                   onChange={(e) => setCandName(e.target.value)}
-                  placeholder="e.g. Sarah Jenkins"
-                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="e.g. Maya Lin"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Party / Organization</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Party or Affiliation
+                </label>
                 <input
                   type="text"
-                  required
                   value={candParty}
                   onChange={(e) => setCandParty(e.target.value)}
-                  placeholder="e.g. Innovation First Alliance"
-                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="e.g. University Green Coalition"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Manifesto Summary</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Candidate Platform &amp; Manifesto
+                </label>
                 <textarea
                   rows={3}
                   value={candManifesto}
                   onChange={(e) => setCandManifesto(e.target.value)}
-                  placeholder="Key campaign promises and vision..."
-                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="Summary of campaign priorities..."
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
                 />
               </div>
-              <div className="flex justify-end gap-3 pt-2">
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setSelectedElectionId(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  className="px-3 py-1.5 text-xs text-slate-600 border rounded-lg hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-cyan-500/20"
+                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg"
                 >
-                  Register Candidate
+                  Add to Ballot Slate
                 </button>
               </div>
             </form>
