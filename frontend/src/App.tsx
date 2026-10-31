@@ -29,11 +29,11 @@ const RequireAuth: React.FC<{ children: React.ReactNode; allowedRoles?: string[]
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors w-full overflow-x-hidden">
       <Navbar />
-      <div className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6 ${user ? 'pb-20 md:pb-6' : ''}`}>
+      <div className={`flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col md:flex-row gap-4 md:gap-6 ${user ? 'pb-24 md:pb-6' : 'pb-8'}`}>
         {user && <Sidebar />}
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="flex-1 min-w-0 w-full overflow-x-hidden">{children}</main>
       </div>
     </div>
   );

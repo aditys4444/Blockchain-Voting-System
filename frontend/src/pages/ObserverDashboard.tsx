@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Election } from '../types';
-import { BarChart3, ShieldCheck, Download, Award, Users, FileCheck } from 'lucide-react';
+import { BarChart3, Lock } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const DEFAULT_ELECTIONS: Election[] = [
@@ -115,35 +115,31 @@ export const ObserverDashboard: React.FC = () => {
   }, [selectedElectionId]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 w-full">
       
       {/* Header */}
-      <div className="civic-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="civic-card p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold">
-              PUBLIC AUDIT &amp; OBSERVATION
-            </span>
+          <div className="flex items-center gap-1.5 text-xs font-mono text-blue-600 dark:text-blue-400 font-bold uppercase">
+            <span>PUBLIC OBSERVATION</span>
             <span className="text-slate-300 dark:text-slate-700">•</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-              CERTIFIED BLOCKCHAIN TALLIES
-            </span>
+            <span className="text-slate-500 font-normal">CERTIFIED TALLIES</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-1">
-            Certified Election Results
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-0.5">
+            Live Election Results
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
-            Live public observation desk. Tally totals are calculated strictly from cryptographically verified transactions recorded on the block ledger.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
+            Tallies are calculated directly from verified transactions mined on the block ledger.
           </p>
         </div>
 
-        {/* Contest Selector Dropdown */}
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-semibold text-slate-500 font-mono">CONTEST:</label>
+        {/* Contest Dropdown */}
+        <div className="flex items-center gap-2 self-start md:self-auto w-full sm:w-auto">
+          <label className="text-xs font-semibold text-slate-500 font-mono shrink-0">CONTEST:</label>
           <select
             value={selectedElectionId || ''}
             onChange={(e) => setSelectedElectionId(Number(e.target.value))}
-            className="px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto px-2.5 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {elections.map((ele) => (
               <option key={ele.id} value={ele.id}>
@@ -155,76 +151,76 @@ export const ObserverDashboard: React.FC = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="civic-card p-5">
-          <div className="text-xs font-mono text-slate-500 uppercase">Total Verified Ballots Cast</div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
+        <div className="civic-card p-4">
+          <div className="text-[10px] sm:text-[11px] font-mono text-slate-500 uppercase">Verified Ballots Cast</div>
+          <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-0.5">
             {liveResults?.total_votes || 0}
           </div>
-          <p className="text-[11px] text-slate-400 font-mono mt-0.5">Recorded on PoW Testnet</p>
+          <p className="text-[10px] text-slate-400 font-mono">Recorded on PoW Ledger</p>
         </div>
 
-        <div className="civic-card p-5">
-          <div className="text-xs font-mono text-slate-500 uppercase">Voting Window Status</div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1 flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        <div className="civic-card p-4">
+          <div className="text-[10px] sm:text-[11px] font-mono text-slate-500 uppercase">Contest Status</div>
+          <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-0.5 flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             <span className="capitalize">{liveResults?.status || 'Active'}</span>
           </div>
-          <p className="text-[11px] text-slate-400 font-mono mt-0.5">SHA-256 Ledger Open</p>
+          <p className="text-[10px] text-slate-400 font-mono">Accepting verified blocks</p>
         </div>
 
-        <div className="civic-card p-5">
-          <div className="text-xs font-mono text-slate-500 uppercase">Consensus Verification</div>
-          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-            100% Valid
+        <div className="civic-card p-4">
+          <div className="text-[10px] sm:text-[11px] font-mono text-slate-500 uppercase">Audit Integrity</div>
+          <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+            100% Certified
           </div>
-          <p className="text-[11px] text-slate-400 font-mono mt-0.5">Zero Double-Votes Detected</p>
+          <p className="text-[10px] text-slate-400 font-mono">Merkle proofs matched</p>
         </div>
       </div>
 
       {/* Candidate Breakdown & Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         
         {/* Candidate List with Progress Bars */}
-        <div className="lg:col-span-2 civic-card p-6 space-y-5">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+        <div className="lg:col-span-2 civic-card p-4 sm:p-6 space-y-4">
+          <h2 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+            <BarChart3 className="w-4 h-4 text-blue-600 shrink-0" />
             <span>Accredited Candidate Tallies</span>
           </h2>
 
-          <div className="space-y-4">
-            {liveResults?.candidates && liveResults.candidates.map((cand: any, i: number) => {
+          <div className="space-y-3">
+            {liveResults?.candidates && liveResults.candidates.map((cand: any) => {
               const isLeader = cand.vote_count > 0 && Math.max(...liveResults.candidates.map((c: any) => c.vote_count)) === cand.vote_count;
 
               return (
-                <div key={cand.candidate_id} className="p-4 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                <div key={cand.candidate_id} className="p-3.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">
                           {cand.name}
                         </span>
                         {isLeader && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">
-                            LEADER
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">
+                            LEAD
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-blue-600 dark:text-blue-400">{cand.party}</p>
+                      <p className="text-[11px] text-blue-600 dark:text-blue-400 truncate">{cand.party}</p>
                     </div>
 
-                    <div className="text-right">
-                      <div className="text-base font-bold text-slate-900 dark:text-slate-100">
-                        {cand.vote_count} <span className="text-xs font-normal text-slate-500">{cand.vote_count === 1 ? 'vote' : 'votes'}</span>
+                    <div className="text-right shrink-0">
+                      <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">
+                        {cand.vote_count} <span className="text-[10px] font-normal text-slate-500">{cand.vote_count === 1 ? 'vote' : 'votes'}</span>
                       </div>
-                      <div className="text-xs font-mono text-slate-500">{cand.percentage}%</div>
+                      <div className="text-[10px] font-mono text-slate-500">{cand.percentage}%</div>
                     </div>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
                       style={{ width: `${cand.percentage}%` }}
                     />
                   </div>
@@ -235,25 +231,25 @@ export const ObserverDashboard: React.FC = () => {
         </div>
 
         {/* Minimal Bar Chart */}
-        <div className="civic-card p-6 flex flex-col justify-between">
+        <div className="civic-card p-4 sm:p-6 flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
-              Visual Distribution
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 mb-0.5">
+              Vote Distribution
             </h3>
-            <p className="text-xs text-slate-500 font-mono">Ballot Share Percentage</p>
+            <p className="text-[11px] text-slate-500 font-mono">Ballot Share Breakdown</p>
           </div>
 
-          <div className="h-56 w-full my-4">
+          <div className="h-48 sm:h-56 w-full my-3">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={liveResults?.candidates || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} interval={0} />
-                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
+              <BarChart data={liveResults?.candidates || []} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b' }} interval={0} />
+                <YAxis tick={{ fontSize: 9, fill: '#64748b' }} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: '#0f172a', 
                     borderColor: '#334155', 
-                    borderRadius: '8px', 
-                    fontSize: '12px',
+                    borderRadius: '6px', 
+                    fontSize: '11px',
                     color: '#f8fafc' 
                   }} 
                 />
@@ -266,8 +262,9 @@ export const ObserverDashboard: React.FC = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-500">
-            🔒 Audit Note: Tallies automatically synchronize on block confirmation.
+          <div className="p-2.5 bg-slate-50 dark:bg-slate-950 rounded border border-slate-200 dark:border-slate-800 text-[10px] font-mono text-slate-500 flex items-center gap-1.5">
+            <Lock className="w-3 h-3 text-slate-400 shrink-0" />
+            <span>Audit Note: Live observer tallies match ledger consensus.</span>
           </div>
         </div>
 

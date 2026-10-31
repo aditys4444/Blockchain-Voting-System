@@ -8,12 +8,9 @@ import {
   RefreshCw, 
   ShieldCheck, 
   Calendar, 
-  FileText, 
-  AlertCircle, 
   ArrowRight,
   ExternalLink,
-  Lock,
-  Cpu
+  Lock
 } from 'lucide-react';
 import { QRCodeModal } from '../components/QRCodeModal';
 import { Link } from 'react-router-dom';
@@ -56,7 +53,6 @@ export const VoterDashboard: React.FC = () => {
   const [elections, setElections] = useState<Election[]>([]);
   const [myReceipts, setMyReceipts] = useState<VoteReceipt[]>([]);
   const [selectedCandidates, setSelectedCandidates] = useState<{ [electionId: number]: Candidate }>({});
-  const [confirmingElectionId, setConfirmingElectionId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [miningStatus, setMiningStatus] = useState<string>('');
   const [voteSuccessReceipt, setVoteSuccessReceipt] = useState<any>(null);
@@ -125,7 +121,6 @@ export const VoterDashboard: React.FC = () => {
     const updatedSelected = { ...selectedCandidates };
     delete updatedSelected[electionId];
     setSelectedCandidates(updatedSelected);
-    setConfirmingElectionId(null);
   };
 
   const generateMockHex = (len: number) => {
@@ -141,13 +136,13 @@ export const VoterDashboard: React.FC = () => {
 
   const handleCastVote = async (cand: Candidate, ele: Election) => {
     setLoading(true);
-    setMiningStatus('Generating SECP256R1 zero-knowledge ballot commitment...');
+    setMiningStatus('Signing ballot commitment with ECDSA key...');
 
     await new Promise(r => setTimeout(r, 600));
-    setMiningStatus('Broadcasting cryptographic transaction to PoW Testnet (Chain ID 1337)...');
+    setMiningStatus('Broadcasting transaction to PoW Testnet...');
 
     await new Promise(r => setTimeout(r, 700));
-    setMiningStatus('Mining transaction into block & verifying Merkle proof...');
+    setMiningStatus('Mining transaction into block & generating receipt...');
 
     try {
       const res = await api.post('/votes/cast', {
@@ -187,140 +182,131 @@ export const VoterDashboard: React.FC = () => {
     } finally {
       setLoading(false);
       setMiningStatus('');
-      setConfirmingElectionId(null);
       fetchVoterData();
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 w-full">
       
       {/* Header Banner */}
-      <div className="civic-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="civic-card p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold">
-              OFFICIAL BALLOT PORTAL
-            </span>
+          <div className="flex items-center gap-1.5 text-xs font-mono text-blue-600 dark:text-blue-400 font-bold uppercase">
+            <span>OFFICIAL BALLOT</span>
             <span className="text-slate-300 dark:text-slate-700">•</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-              SECP256R1 ECDSA SIGNED
-            </span>
+            <span className="text-slate-500 font-normal">CAMPUS VOTING DESK</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-0.5">
             Active University Elections
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
-            Eligible student and faculty voters can review accredited candidates, cast a single irreversible ballot, and obtain a verifiable cryptographic transaction receipt.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
+            Select an accredited candidate and cast your ballot. All submissions are immutably signed on the block ledger.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <div>
-              <div className="text-[10px] text-slate-400 uppercase">AUTHENTICATED VOTER</div>
-              <div className="font-bold text-slate-800 dark:text-slate-200">{user?.username || 'voter1'}</div>
-            </div>
+        <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+          <div className="px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className="text-slate-700 dark:text-slate-300 font-semibold">{user?.username || 'voter1'}</span>
           </div>
         </div>
       </div>
 
-      {/* Active Elections List */}
-      <div className="space-y-6">
+      {/* Elections List */}
+      <div className="space-y-4 sm:space-y-6">
         {elections.length === 0 ? (
-          <div className="civic-card p-12 text-center text-slate-500 dark:text-slate-400">
-            <Calendar className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700 mb-3" />
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">No Active Elections Currently Open</h3>
-            <p className="text-xs text-slate-500 mt-1">Check back during designated campus voting windows.</p>
+          <div className="civic-card p-8 sm:p-12 text-center text-slate-500">
+            <Calendar className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-700 mb-2" />
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">No Active Elections Currently Open</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Voting windows will appear here when scheduled.</p>
           </div>
         ) : (
           elections.map((ele) => {
             const alreadyVoted = hasVotedInElection(ele.id);
             const recordedReceipt = getVoteReceiptForElection(ele.id);
             const selectedCand = selectedCandidates[ele.id];
-            const isConfirming = confirmingElectionId === ele.id;
 
             return (
-              <div key={ele.id} className="civic-card p-6 sm:p-7 space-y-6">
+              <div key={ele.id} className="civic-card p-4 sm:p-6 space-y-4 sm:space-y-5">
                 
-                {/* Election Metadata Header */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                {/* Election Header */}
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        VOTING ACTIVE
+                        VOTING OPEN
                       </span>
-                      <span className="text-xs text-slate-400 font-mono">Election #{ele.id}</span>
+                      <span className="text-[11px] text-slate-400 font-mono">Contest #{ele.id}</span>
                     </div>
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                    <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
                       {ele.title}
                     </h2>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 max-w-2xl">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
                       {ele.description}
                     </p>
                   </div>
 
-                  {/* Voter Status Tag / Re-vote reset tool */}
+                  {/* Status / Reset */}
                   <div className="flex items-center gap-2 shrink-0">
                     {alreadyVoted ? (
-                      <div className="flex items-center gap-2">
-                        <span className="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600" /> BALLOT RECORDED
+                      <div className="flex items-center gap-1.5">
+                        <span className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-lg text-xs font-mono font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>VOTED</span>
                         </span>
                         <button
                           onClick={() => resetMyVotes(ele.id)}
-                          className="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono transition-colors"
-                          title="Reset vote in demo mode to cast another ballot"
+                          className="px-2 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-mono"
+                          title="Reset vote in demo mode"
                         >
-                          <RefreshCw className="w-3.5 h-3.5" />
+                          <RefreshCw className="w-3 h-3" />
                         </button>
                       </div>
                     ) : (
-                      <span className="px-3 py-1.5 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg text-xs font-mono font-medium flex items-center gap-1.5">
-                        <VoteIcon className="w-4 h-4 text-blue-600" /> ELIGIBLE TO VOTE (1 BALLOT)
+                      <span className="px-2.5 py-1 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg text-xs font-mono font-medium flex items-center gap-1">
+                        <VoteIcon className="w-3.5 h-3.5 text-blue-600" />
+                        <span>ELIGIBLE (1 VOTE)</span>
                       </span>
                     )}
                   </div>
                 </div>
 
-                {/* Candidate Selection Area */}
+                {/* Candidate Slate or Voted Status */}
                 {alreadyVoted ? (
-                  /* Post-Vote Confirmation State */
-                  <div className="p-5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 space-y-3">
-                    <div className="flex items-center justify-between">
+                  <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 space-y-2.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                          Your vote is cryptographically secured on Block #{recordedReceipt?.block_index || 1403}
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">
+                          Your ballot is recorded on Block #{recordedReceipt?.block_index || 1403}
                         </h4>
                       </div>
                       <Link
                         to="/voter/receipts"
-                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                        className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 self-start sm:self-auto"
                       >
-                        <span>View Official Receipt</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>View Receipt</span>
+                        <ExternalLink className="w-3 h-3" />
                       </Link>
                     </div>
 
-                    <div className="font-mono text-xs text-slate-500 dark:text-slate-400 space-y-1 pt-1 border-t border-slate-200 dark:border-slate-800">
-                      <div>TRANSACTION HASH: <span className="font-bold text-slate-800 dark:text-slate-200">{recordedReceipt?.tx_hash || '0x4f8a...3b21'}</span></div>
-                      <div>RECEIPT HASH: <span className="text-slate-700 dark:text-slate-300">{recordedReceipt?.receipt_hash || 'e3b0c442...'}</span></div>
-                      <div className="text-[11px] text-slate-400 pt-1">
-                        🔒 Ballot Secrecy Guarantee: Candidate choice is zero-knowledge committed and hidden from public receipts.
+                    <div className="font-mono text-[11px] text-slate-500 dark:text-slate-400 space-y-1 pt-1 border-t border-slate-200 dark:border-slate-800 break-all">
+                      <div>TX: <span className="font-bold text-slate-800 dark:text-slate-200">{recordedReceipt?.tx_hash || '0x4f8a...'}</span></div>
+                      <div className="text-[10px] text-slate-400 flex items-center gap-1 pt-0.5">
+                        <Lock className="w-3 h-3 shrink-0" />
+                        <span>Candidate choice is encrypted and anonymous.</span>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  /* Voting Slate: Candidate Cards */
-                  <div className="space-y-4">
-                    <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                      Select One Candidate to Cast Your Ballot:
+                  <div className="space-y-3">
+                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                      Select candidate to cast ballot:
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {ele.candidates && ele.candidates.map((cand) => {
                         const isSelected = selectedCand?.id === cand.id;
 
@@ -328,35 +314,35 @@ export const VoterDashboard: React.FC = () => {
                           <div
                             key={cand.id}
                             onClick={() => handleSelectCandidate(ele.id, cand)}
-                            className={`p-5 rounded-xl border cursor-pointer transition-all ${
+                            className={`p-3.5 sm:p-4 rounded-xl border cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-blue-600 bg-blue-50/40 dark:bg-blue-950/30 ring-2 ring-blue-600/30'
+                                ? 'border-blue-600 bg-blue-50/40 dark:bg-blue-950/30 ring-1 ring-blue-600'
                                 : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
                             }`}
                           >
-                            <div className="flex items-start gap-4">
+                            <div className="flex items-start gap-3">
                               <img
                                 src={cand.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
                                 alt={cand.name}
-                                className="w-14 h-14 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+                                className="w-12 h-12 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0"
                               />
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between gap-2">
-                                  <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 truncate">
+                                <div className="flex items-center justify-between gap-1.5">
+                                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                                     {cand.name}
                                   </h4>
-                                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                                     isSelected
                                       ? 'border-blue-600 bg-blue-600 text-white'
                                       : 'border-slate-300 dark:border-slate-600'
                                   }`}>
-                                    {isSelected && <span className="w-2 h-2 rounded-full bg-white"></span>}
+                                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white"></span>}
                                   </div>
                                 </div>
                                 <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-0.5">
                                   {cand.party}
                                 </p>
-                                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3">
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                                   {cand.manifesto}
                                 </p>
                               </div>
@@ -366,36 +352,34 @@ export const VoterDashboard: React.FC = () => {
                       })}
                     </div>
 
-                    {/* Step 2: Confirmation & Submission Box */}
+                    {/* Step 2: Confirmation Box */}
                     {selectedCand && (
-                      <div className="p-5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl space-y-4 mt-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <div className="text-xs font-mono uppercase text-blue-600 dark:text-blue-400 font-bold">
-                              CONFIRM YOUR SELECTION
-                            </div>
-                            <div className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">
-                              You have selected: <span className="text-blue-600 dark:text-blue-400">{selectedCand.name}</span> ({selectedCand.party})
-                            </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                              Submission will sign a transaction with your authenticated identity and record it on the PoW block ledger.
-                            </p>
+                      <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 mt-3">
+                        <div>
+                          <div className="text-[11px] font-mono uppercase text-blue-600 dark:text-blue-400 font-bold">
+                            CONFIRM YOUR VOTE
                           </div>
+                          <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">
+                            Selected: <span className="text-blue-600 dark:text-blue-400">{selectedCand.name}</span> ({selectedCand.party})
+                          </div>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Submitting creates an immutable transaction on the blockchain ledger.
+                          </p>
                         </div>
 
                         {loading ? (
-                          <div className="p-4 bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-3">
-                            <RefreshCw className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin shrink-0" />
-                            <div className="font-mono text-xs text-blue-800 dark:text-blue-200">
+                          <div className="p-3 bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-2.5">
+                            <RefreshCw className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin shrink-0" />
+                            <div className="font-mono text-xs text-blue-800 dark:text-blue-200 truncate">
                               {miningStatus}
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-3">
+                          <div className="flex flex-col sm:flex-row gap-2">
                             <button
                               onClick={() => handleCastVote(selectedCand, ele)}
                               disabled={loading}
-                              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                              className="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm"
                             >
                               <VoteIcon className="w-4 h-4" />
                               <span>Submit Official Ballot</span>
@@ -406,9 +390,9 @@ export const VoterDashboard: React.FC = () => {
                                 delete next[ele.id];
                                 return next;
                               })}
-                              className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-lg hover:bg-slate-100 transition-colors"
+                              className="w-full sm:w-auto px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs rounded-lg hover:bg-slate-100 transition-colors"
                             >
-                              Cancel Selection
+                              Cancel
                             </button>
                           </div>
                         )}
@@ -423,7 +407,7 @@ export const VoterDashboard: React.FC = () => {
         )}
       </div>
 
-      {/* Success QR Receipt Modal */}
+      {/* QR Code Modal */}
       <QRCodeModal
         isOpen={Boolean(voteSuccessReceipt)}
         receipt={voteSuccessReceipt}
