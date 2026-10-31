@@ -12,7 +12,7 @@
       "destination": "/stitch_redesign/index.html"
     },
     {
-      "source": "/((?!stitch_redesign).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
