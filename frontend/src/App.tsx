@@ -39,6 +39,18 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
+const RedesignShowcasePage: React.FC = () => {
+  return (
+    <div className="w-full h-[calc(100vh-4rem)]">
+      <iframe
+        src="/stitch_redesign/index.html"
+        title="CivicVote Redesign Showcase"
+        className="w-full h-full border-none rounded-2xl shadow-xl"
+      />
+    </div>
+  );
+};
+
 export function App() {
   return (
     <ThemeProvider>
@@ -46,6 +58,10 @@ export function App() {
         <BrowserRouter>
           <MainLayout>
             <Routes>
+              {/* Redesign Routes */}
+              <Route path="/redesign" element={<RedesignShowcasePage />} />
+              <Route path="/stitch" element={<RedesignShowcasePage />} />
+
               {/* Public Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />

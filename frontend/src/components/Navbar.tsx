@@ -35,6 +35,16 @@ export const Navbar: React.FC = () => {
           {/* Right Actions */}
           <div className="flex items-center gap-3">
             
+            {/* Redesign Link */}
+            <a
+              href="/stitch_redesign/index.html"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors shadow-sm"
+              title="Open the CivicVote Stitch UI Redesign Showcase"
+            >
+              <span>🏛️ CivicVote Redesign</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-600 text-white font-mono font-bold">New</span>
+            </a>
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}

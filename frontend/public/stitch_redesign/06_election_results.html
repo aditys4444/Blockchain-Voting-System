@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CivicVote - Official Election Results &amp; Audit Tally</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline": "#76777d",
+            "surface-container-high": "#dce9ff",
+            "on-tertiary": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "secondary-container": "#316bf3",
+            "on-tertiary-container": "#0c9488",
+            "surface-bright": "#f8f9ff",
+            "secondary-fixed-dim": "#b4c5ff",
+            "error": "#ba1a1a",
+            "on-background": "#0b1c30",
+            "secondary": "#0051d5",
+            "on-surface-variant": "#45464d",
+            "on-tertiary-fixed-variant": "#005049",
+            "on-primary": "#ffffff",
+            "on-surface": "#0b1c30",
+            "tertiary-fixed": "#89f5e7",
+            "surface-dim": "#cbdbf5",
+            "on-secondary-container": "#fefcff",
+            "on-primary-fixed": "#131b2e",
+            "primary-fixed-dim": "#bec6e0",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-fixed-variant": "#003ea8",
+            "outline-variant": "#c6c6cd",
+            "primary-fixed": "#dae2fd",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#3f465c",
+            "primary-container": "#131b2e",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "tertiary-container": "#00201d",
+            "surface": "#f8f9ff",
+            "surface-tint": "#565e74",
+            "tertiary": "#000000",
+            "surface-container": "#e5eeff",
+            "surface-variant": "#d3e4fe",
+            "on-primary-container": "#7c839b",
+            "on-error": "#ffffff",
+            "primary": "#000000",
+            "inverse-primary": "#bec6e0",
+            "background": "#f8f9ff",
+            "surface-container-highest": "#d3e4fe",
+            "inverse-surface": "#213145",
+            "inverse-on-surface": "#eaf1ff",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#00201d",
+            "on-secondary-fixed": "#00174b",
+            "secondary-fixed": "#dbe1ff",
+            "on-secondary": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter-sm": "1rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "gutter-lg": "2rem",
+            "margin": "2rem",
+            "margin-mobile": "1rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-xl-mobile": ["Public Sans"],
+            "headline-md": ["Public Sans"],
+            "headline-lg": ["Public Sans"],
+            "hash-display": ["JetBrains Mono"],
+            "code-mono": ["JetBrains Mono"],
+            "body-md": ["Public Sans"],
+            "headline-xl": ["Public Sans"],
+            "body-lg": ["Public Sans"],
+            "label-md": ["Public Sans"],
+            "headline-lg-mobile": ["Public Sans"]
+          },
+          "fontSize": {
+            "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "hash-display": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+            "code-mono": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col justify-between">
+<!-- TopNavBar Component -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-gutter md:px-gutter-lg max-w-[1200px] mx-auto h-16">
+<div class="flex items-center gap-6">
+<a class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface dark:text-on-surface flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">gavel</span>
+          CivicVote
+        </a>
+<nav class="hidden md:flex items-center space-x-6">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:text-primary dark:hover:text-primary transition-colors duration-150" href="#">Ballot Ledger</a>
+<a class="text-secondary dark:text-secondary font-bold border-b-2 border-secondary dark:border-secondary pb-1" href="#">Audit Proofs</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:text-primary dark:hover:text-primary transition-colors duration-150" href="#">Voter Directory</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:text-primary dark:hover:text-primary transition-colors duration-150" href="#">Governance Registry</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-lg border border-outline-variant text-code-mono font-code-mono text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+          0x71C8...39A2 (Audit Observer)
+        </div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded font-label-md hover:bg-primary/90 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">wallet</span>
+          Connect Wallet
+        </button>
+<button class="hidden md:flex items-center justify-center p-2 rounded border border-outline-variant text-on-surface hover:bg-surface-container-low">
+<span class="material-symbols-outlined">account_balance</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-gutter md:px-gutter-lg py-space-lg">
+<!-- Breadcrumbs -->
+<nav class="flex items-center text-label-md text-on-surface-variant mb-space-md space-x-2">
+<a class="hover:text-primary" href="#">Voter Portal</a>
+<span class="text-outline">/</span>
+<a class="hover:text-primary" href="#">Elections</a>
+<span class="text-outline">/</span>
+<a class="hover:text-primary" href="#">2026 SGA Presidential Election</a>
+<span class="text-outline">/</span>
+<span class="text-on-surface font-semibold">Official Certified Results</span>
+</nav>
+<!-- Page Title & Header Actions -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-space-lg">
+<div>
+<h1 class="text-headline-lg md:text-headline-xl font-headline-lg text-on-surface">2026 SGA Presidential Election</h1>
+<p class="text-body-md text-on-surface-variant">Cryptographically audited final tally and candidate distribution logs.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface px-4 py-2 rounded hover:bg-surface-container-low transition-colors text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+          Export Full Cryptographic Tally (.CSV / .JSON)
+        </button>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface px-4 py-2 rounded hover:bg-surface-container-low transition-colors text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">description</span>
+          Download Certified Canvass Report (.PDF)
+        </button>
+</div>
+</div>
+<!-- Results Status & Certification Banner -->
+<div class="bg-surface-container-lowest border-2 border-emerald-600 rounded-xl p-space-md md:p-space-lg mb-space-lg shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 flex-shrink-0">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-emerald-100 text-emerald-800 text-label-md px-2 py-0.5 rounded font-bold">Official Certified Results — Consensus Finalized</span>
+<span class="text-code-mono text-outline">Block #1,450</span>
+</div>
+<p class="text-body-md text-on-surface-variant">All 5 campus validator nodes have cryptographically signed and confirmed the final ballot counts. Immutable zero-knowledge verification completed successfully with zero discrepancies.</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1 flex-shrink-0 text-right w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-outline-variant">
+<span class="text-hash-display text-on-surface-variant font-hash-display">Merkle Root Checksum</span>
+<span class="text-code-mono text-primary font-bold">0x3f8a92...e1c0</span>
+</div>
+</div>
+<!-- Key Participation Metrics (4-up Clean Data Grid) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-space-lg">
+<!-- Metric 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-space-md">
+<div class="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Ballots Mined</div>
+<div class="text-headline-lg font-headline-lg text-on-surface mb-1">1,248</div>
+<div class="text-code-mono text-emerald-700 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">lock</span>
+          100% verified on PoW chain
+        </div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-space-md">
+<div class="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Eligible Student Body</div>
+<div class="text-headline-lg font-headline-lg text-on-surface mb-1">1,850</div>
+<div class="text-code-mono text-on-surface-variant">Registered whitelist</div>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-space-md">
+<div class="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Voter Turnout Rate</div>
+<div class="text-headline-lg font-headline-lg text-on-surface mb-1">67.46%</div>
+<div class="text-code-mono text-emerald-700 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+          Quorum requirement 40% achieved ✓
+        </div>
+</div>
+<!-- Metric 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-space-md">
+<div class="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Merkle Root Checksum</div>
+<div class="text-code-mono text-primary font-bold truncate mb-1">0x3f8a92...e1c0</div>
+<div class="text-code-mono text-on-surface-variant">Matches genesis ballot ledger</div>
+</div>
+</div>
+<!-- Candidate Results Breakdown & Visual Bar Comparison -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg mb-space-lg">
+<div class="flex items-center justify-between mb-space-md">
+<h2 class="text-headline-md font-headline-md text-on-surface">Candidate Tally &amp; Preference Distribution</h2>
+<span class="text-label-md text-on-surface-variant">Ranked Choice Single Transferable Vote</span>
+</div>
+<div class="space-y-6">
+<!-- 1st Place -->
+<div class="p-4 rounded-lg bg-surface-container-low border-2 border-secondary relative">
+<div class="absolute top-4 right-4 flex items-center gap-2">
+<span class="bg-emerald-100 text-emerald-800 text-label-md px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">award_star</span>
+              WINNER CERTIFIED
+            </span>
+</div>
+<div class="flex items-center gap-4 mb-3">
+<div class="w-16 h-16 rounded overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A professional portrait photograph of Maya Lin, a confident student leader running for SGA president, captured against a clean neutral campus background with soft, natural lighting. She is wearing professional academic attire, smiling gently, and projecting an aura of trustworthiness and competence. High institutional standard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlt8kBzXia-qDDxIISVtILnaRC3rekMy-nfgYUDwt5Z4A_w4uYIM6P3sUCsy9MKR8fnj_srfaMIe68AwQJ7XaH0DCcLFGPNZ-ym4O7LIFXBHgnSM0QAkkN3oWsNl2xLPZkOHjxAydPNreFzk5PCmtX7FP9sUbSucoQmtGbKBfYx8DYDK_Sl-RcxQIMhzYl_sg_HQJkK1_vT0mE-neQpoV8V39jwNmDfHzUX53EhtCqZzmqFfac1ZWjc5eYMv7nb6lsie7bSKp05Q"/>
+</div>
+<div>
+<div class="text-headline-md font-headline-md text-on-surface">Maya Lin</div>
+<div class="text-body-md text-on-surface-variant font-medium">Progressive Campus Action</div>
+<div class="text-code-mono text-emerald-700 mt-0.5">Margin +184 votes ahead</div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-body-md font-medium">
+<span>582 votes</span>
+<span class="font-bold">46.63%</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 46.63%;"></div>
+</div>
+</div>
+</div>
+<!-- 2nd Place -->
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center gap-4 mb-3">
+<div class="w-16 h-16 rounded overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A formal institutional portrait of Jordan Hayes, a student government candidate, set against a blurred library background with warm, professional lighting. The subject is dressed in a crisp button-down shirt, exuding dependability and rigorous dedication to student governance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdZ6aqb3BRdyMvCCxXnyCbMXHhMj1ymVTE02i2Q_vdxo5SIrXElkZgnn9s90VVo7ou-vc-4KWzB4n7p2z5ciSS44cTRYXD7ZzXpxMf4zG6doHnXYRQS9L_xf-dXny26TvyCR6fQ9hio5T2nchML3mwotzXgRzAJ53D0-y2bAklx8MLjlXqpk1GOqLUNhhZZF-K1leA6XbX2TgYQ8jRs3quVp9NBNzU11aIMWxI5SSmo4rzt9L4glyMubQZpc9l5RPhpfzuRfEcng"/>
+</div>
+<div>
+<div class="text-headline-md font-headline-md text-on-surface">Jordan Hayes</div>
+<div class="text-body-md text-on-surface-variant font-medium">Student First Coalition</div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-body-md font-medium">
+<span>398 votes</span>
+<span class="font-bold">31.89%</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 31.89%;"></div>
+</div>
+</div>
+</div>
+<!-- 3rd Place -->
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center gap-4 mb-3">
+<div class="w-16 h-16 rounded overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A clean, professional headshot of Priya Sharma, a student candidate for student government, photographed in front of a modern university building with clear, daylight illumination. She is dressed professionally and maintains an approachable yet serious expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXALT-EvhVJWifoJhZTF__fbZ7M4483DjOeXM0LncT7SHhvLB03iVUOWJx0BWiO7R1MFWJRg64oWDkvuf7CwVJnZbjhQHS3siJ5IyGl9NV0HVKVPmwjZcrrO1j_a55IG54yZ9kKzn1GBZG67AdXGE-Ovqd7-gy-wFa547HCUwTlyg5a_bMaNHshG_ax-n4n3V6Hp4FFTsN77gisc8I9VRc4ofUabTzPVb0vxtYmIsJ6m-89_DUmsBX4J7_e5UqtVeNFKX3ItJnpQ"/>
+</div>
+<div>
+<div class="text-headline-md font-headline-md text-on-surface">Priya Sharma</div>
+<div class="text-body-md text-on-surface-variant font-medium">Civic Transparency Alliance</div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-body-md font-medium">
+<span>268 votes</span>
+<span class="font-bold">21.48%</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden bg-opacity-80">
+<div class="bg-outline h-full rounded-full" style="width: 21.48%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Audit & Blockchain Verification Log -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg mb-space-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-space-md">
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface">Audit &amp; Blockchain Verification Log</h3>
+<p class="text-body-md text-on-surface-variant">Real-time immutable transaction records across campus validation nodes.</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-sm">search</span>
+<input class="pl-9 pr-4 py-1.5 text-body-md bg-surface-container-lowest border border-outline-variant rounded focus:outline-none focus:border-primary w-64" placeholder="Filter by Block or Hash..." type="text"/>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-label-md text-on-surface-variant uppercase tracking-wider">
+<th class="py-3 px-4">Block Height</th>
+<th class="py-3 px-4">Transaction Hash</th>
+<th class="py-3 px-4">Timestamp (UTC)</th>
+<th class="py-3 px-4">Gas Fee</th>
+<th class="py-3 px-4">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-md">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-bold text-code-mono">#1,403</td>
+<td class="py-3 px-4 font-code-mono text-secondary">0x8f2c...49a1</td>
+<td class="py-3 px-4 text-on-surface-variant">2026-04-12 14:22:05</td>
+<td class="py-3 px-4 font-code-mono">0.00 Gwei</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-label-md font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Confirmed
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-bold text-code-mono">#1,402</td>
+<td class="py-3 px-4 font-code-mono text-secondary">0x3b1e...90ff</td>
+<td class="py-3 px-4 text-on-surface-variant">2026-04-12 14:21:40</td>
+<td class="py-3 px-4 font-code-mono">0.00 Gwei</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-label-md font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Confirmed
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-bold text-code-mono">#1,401</td>
+<td class="py-3 px-4 font-code-mono text-secondary">0x99aa...22cd</td>
+<td class="py-3 px-4 text-on-surface-variant">2026-04-12 14:21:12</td>
+<td class="py-3 px-4 font-code-mono">0.00 Gwei</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-label-md font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Confirmed
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-bold text-code-mono">#1,400</td>
+<td class="py-3 px-4 font-code-mono text-secondary">0x77ee...11bb</td>
+<td class="py-3 px-4 text-on-surface-variant">2026-04-12 14:20:55</td>
+<td class="py-3 px-4 font-code-mono">0.00 Gwei</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-label-md font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Confirmed
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between text-body-md text-on-surface-variant">
+<div>Showing blocks #1,400 through #1,403 of #1,450 total blocks</div>
+<a class="text-secondary font-semibold hover:underline flex items-center gap-1 mt-2 sm:mt-0" href="#">
+          Run Local Python Verification Script
+          <span class="material-symbols-outlined text-sm">terminal</span>
+</a>
+</div>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant dark:border-outline-variant mt-auto">
+<div class="w-full px-gutter md:px-gutter-lg max-w-[1200px] mx-auto py-space-lg flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex flex-col gap-2 text-center md:text-left">
+<span class="text-label-md uppercase tracking-wider text-on-surface dark:text-on-surface font-bold">CivicVote Academic Consortium</span>
+<p class="text-body-md text-on-surface-variant max-w-md">© 2025 CivicVote Academic Consortium. Non-custodial cryptographic audit standard compliant.</p>
+</div>
+<div class="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary dark:hover:text-primary underline decoration-1" href="#">Smart Contracts</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary dark:hover:text-primary underline decoration-1" href="#">Ledger Verification</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary dark:hover:text-primary underline decoration-1" href="#">Voter Privacy Protocol</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary dark:hover:text-primary underline decoration-1" href="#">Registrar Support</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary dark:hover:text-primary underline decoration-1" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</body></html>

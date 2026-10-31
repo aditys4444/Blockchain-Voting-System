@@ -118,6 +118,34 @@ export const Login: React.FC = () => {
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8 glass-card p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">
         
+        {/* CivicVote Redesign Banner */}
+        <a
+          href="/stitch_redesign/index.html"
+          className="block p-4 rounded-2xl bg-gradient-to-r from-slate-900 to-blue-950 border-2 border-blue-500/40 hover:border-blue-400 text-white shadow-xl transition-all group text-left"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shrink-0 shadow">
+                <span className="text-xl">🏛️</span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">
+                    CivicVote UI Redesign
+                  </span>
+                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                    Live
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Explore all 8 redesigned desktop &amp; mobile screens
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform shrink-0" />
+          </div>
+        </a>
+
         {/* Header */}
         <div className="text-center">
           <div className="inline-flex p-3 bg-gradient-to-tr from-blue-600 to-cyan-500 rounded-2xl text-white shadow-lg shadow-cyan-500/20 mb-4">

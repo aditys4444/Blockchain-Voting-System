@@ -1,0 +1,381 @@
+<html class="h-full"><head>
+<meta charset="utf-8"/>
+<title>CivicVote Blockchain Voting System: Administrator Election &amp; Candidate Management Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#dae2fd",
+            "surface-variant": "#d3e4fe",
+            "secondary-fixed-dim": "#b4c5ff",
+            "secondary-fixed": "#dbe1ff",
+            "outline-variant": "#c6c6cd",
+            "on-tertiary-container": "#0c9488",
+            "on-background": "#0b1c30",
+            "inverse-on-surface": "#eaf1ff",
+            "outline": "#76777d",
+            "primary-fixed-dim": "#bec6e0",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed-variant": "#005049",
+            "on-surface": "#0b1c30",
+            "on-secondary-fixed": "#00174b",
+            "surface-dim": "#cbdbf5",
+            "on-primary-container": "#7c839b",
+            "error-container": "#ffdad6",
+            "inverse-primary": "#bec6e0",
+            "primary": "#000000",
+            "surface-tint": "#565e74",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "surface-container": "#e5eeff",
+            "background": "#f8f9ff",
+            "surface-container-high": "#dce9ff",
+            "on-secondary-container": "#fefcff",
+            "on-primary": "#ffffff",
+            "primary-container": "#131b2e",
+            "on-tertiary-fixed": "#00201d",
+            "error": "#ba1a1a",
+            "secondary-container": "#316bf3",
+            "inverse-surface": "#213145",
+            "tertiary": "#000000",
+            "surface-bright": "#f8f9ff",
+            "tertiary-fixed": "#89f5e7",
+            "tertiary-container": "#00201d",
+            "on-primary-fixed-variant": "#3f465c",
+            "surface": "#f8f9ff",
+            "on-secondary-fixed-variant": "#003ea8",
+            "surface-container-highest": "#d3e4fe",
+            "secondary": "#0051d5",
+            "on-secondary": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "on-primary-fixed": "#131b2e",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#45464d",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "gutter-lg": "2rem",
+            "space-xl": "2.5rem",
+            "gutter-sm": "1rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "code-mono": ["JetBrains Mono"],
+            "label-md": ["Public Sans"],
+            "headline-md": ["Public Sans"],
+            "hash-display": ["JetBrains Mono"],
+            "body-lg": ["Public Sans"],
+            "headline-lg": ["Public Sans"],
+            "headline-xl-mobile": ["Public Sans"],
+            "headline-lg-mobile": ["Public Sans"],
+            "headline-xl": ["Public Sans"],
+            "body-md": ["Public Sans"]
+          },
+          "fontSize": {
+            "code-mono": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "500" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "hash-display": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full bg-surface text-on-surface font-body-md antialiased flex">
+<!-- Left Admin Sidebar Navigation (Permanent 260px wide sidebar) -->
+<aside class="w-[260px] bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col justify-between shrink-0 h-screen sticky top-0">
+<div>
+<!-- Brand -->
+<div class="h-16 px-gutter flex items-center gap-3 border-b border-outline-variant/20">
+<div class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<h1 class="text-headline-md text-on-surface font-bold tracking-tight">CivicVote Admin</h1>
+<p class="text-hash-display text-on-surface-variant">Consensus v4.2</p>
+</div>
+</div>
+<!-- Menu Items -->
+<nav class="p-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-container text-primary font-semibold text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
+          Elections Overview
+        </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+          Candidate Rosters
+        </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined">app_registration</span>
+          Voter Eligibility Registry
+        </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined">key</span>
+          Results &amp; Decryption
+        </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+          Audit Activity Logs
+        </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined">dns</span>
+          Node &amp; Network Health
+        </a>
+</nav>
+</div>
+<!-- Bottom Admin Profile -->
+<div class="p-4 border-t border-outline-variant/20 bg-surface-container-low/50">
+<div class="flex items-center justify-between mb-2">
+<div>
+<p class="text-label-md text-on-surface">Dean of Students Office</p>
+<p class="text-hash-display text-on-surface-variant">Admin #01 (Secure Enclave)</p>
+</div>
+</div>
+<button class="w-full mt-2 flex items-center justify-center gap-2 py-2 px-3 border border-outline-variant bg-surface-container-lowest text-on-surface rounded hover:bg-error-container hover:text-on-error-container hover:border-error transition-all text-label-md">
+<span class="material-symbols-outlined text-sm">logout</span>
+        Sign Out
+      </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto">
+<!-- Top Admin Header Bar -->
+<header class="h-16 px-gutter-lg bg-surface-container-lowest border-b border-outline-variant/20 flex items-center justify-between sticky top-0 z-10">
+<div class="flex items-center gap-6">
+<h2 class="text-headline-md font-bold text-on-surface">Election Operations &amp; Management</h2>
+<div class="hidden xl:flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-full border border-outline-variant/30 text-code-mono text-xs">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-on-surface-variant">Smart Contract Master Key Connected:</span>
+<span class="text-on-surface font-bold">0xAdmin...990B</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-surface-container-lowest border border-outline-variant text-on-surface rounded font-medium text-body-md hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-base">upload_file</span>
+          Import Voter Whitelist (CSV)
+        </button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded font-medium text-body-md hover:bg-primary/90 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-base">add</span>
+          + Create New Election
+        </button>
+</div>
+</header>
+<div class="p-gutter-lg space-y-8 max-w-[1200px] w-full mx-auto">
+<!-- System Status & Health Metrics Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-lg flex items-center justify-between">
+<div>
+<p class="text-label-md text-on-surface-variant uppercase">Network Consensus</p>
+<p class="text-headline-md font-bold text-on-surface mt-1">5/5 Validator Nodes Synchronized</p>
+<p class="text-hash-display text-on-surface-variant mt-0.5">PoW Difficulty: 4 | Gas Price: 0.1 Gwei</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-lg flex items-center justify-between">
+<div>
+<p class="text-label-md text-on-surface-variant uppercase">Pending Disputes</p>
+<p class="text-headline-md font-bold text-on-surface mt-1">No pending disputes</p>
+<p class="text-hash-display text-emerald-600 mt-0.5">All zero-knowledge audits cleared</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined">task_alt</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-lg flex items-center justify-between">
+<div>
+<p class="text-label-md text-on-surface-variant uppercase">System Loader Demo</p>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+<span class="text-body-md text-on-surface font-medium">Syncing mempool...</span>
+</div>
+<p class="text-hash-display text-on-surface-variant mt-0.5">Block Height #1,451</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined">sync</span>
+</div>
+</div>
+</div>
+<!-- Elections Management Table -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg overflow-hidden shadow-sm">
+<div class="px-6 py-4 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low/30">
+<div>
+<h3 class="text-headline-md font-bold text-on-surface">Active &amp; Managed Elections</h3>
+<p class="text-body-md text-on-surface-variant">Manage smart contracts, deployment states, and cryptographic tallies.</p>
+</div>
+<span class="text-label-md text-on-surface-variant px-2.5 py-1 bg-surface-container rounded">3 Total Records</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30 text-label-md text-on-surface-variant bg-surface-container-low/50">
+<th class="py-3 px-6">Election Title</th>
+<th class="py-3 px-4">Status</th>
+<th class="py-3 px-4">Schedule</th>
+<th class="py-3 px-4">Candidates</th>
+<th class="py-3 px-4">Ballots Cast</th>
+<th class="py-3 px-6 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 text-body-md">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="py-4 px-6 font-semibold text-on-surface">
+                  2026 Student Government Association Presidential Election
+                  <div class="text-hash-display text-on-surface-variant mt-0.5">Contract: 0x8F9a...2B11</div>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                    ACTIVE
+                  </span>
+</td>
+<td class="py-4 px-4 text-on-surface-variant text-xs">
+                  Oct 30, 08:00 - Oct 31, 18:00 UTC
+                </td>
+<td class="py-4 px-4 text-on-surface">
+                  3 Candidates
+                  <div class="text-xs text-on-surface-variant">Maya Lin, Jordan Hayes...</div>
+</td>
+<td class="py-4 px-4 font-mono font-medium text-on-surface">
+                  1,248
+                </td>
+<td class="py-4 px-6 text-right space-x-2">
+<button class="px-3 py-1.5 bg-amber-100 text-amber-900 border border-amber-300 rounded text-label-md hover:bg-amber-200 transition-colors">
+                    Close Voting
+                  </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant text-on-surface rounded text-label-md hover:bg-surface-container-low transition-colors">
+                    Edit
+                  </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant text-on-surface rounded text-label-md hover:bg-surface-container-low transition-colors">
+                    Audit Logs
+                  </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="py-4 px-6 font-semibold text-on-surface">
+                  Engineering Senator Fall 2026
+                  <div class="text-hash-display text-on-surface-variant mt-0.5">Contract: 0x4C2e...9E40</div>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                    SCHEDULED
+                  </span>
+</td>
+<td class="py-4 px-4 text-on-surface-variant text-xs">
+                  Nov 05, 09:00 - Nov 06, 17:00 UTC
+                </td>
+<td class="py-4 px-4 text-on-surface">
+                  4 Candidates
+                </td>
+<td class="py-4 px-4 font-mono font-medium text-on-surface-variant">
+                  0 <span class="text-xs">(Pending launch)</span>
+</td>
+<td class="py-4 px-6 text-right space-x-2">
+<button class="px-3 py-1.5 bg-surface-container text-primary border border-outline-variant rounded text-label-md hover:bg-surface-container-high transition-colors">
+                    Launch Early
+                  </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant text-on-surface rounded text-label-md hover:bg-surface-container-low transition-colors">
+                    Edit
+                  </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-error/50 text-error rounded text-label-md hover:bg-error-container/50 transition-colors">
+                    Delete
+                  </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="py-4 px-6 font-semibold text-on-surface">
+                  Campus Green Energy Referendum
+                  <div class="text-hash-display text-on-surface-variant mt-0.5">Contract: 0x1A8b...7F32</div>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-800">
+                    CLOSED
+                  </span>
+</td>
+<td class="py-4 px-4 text-on-surface-variant text-xs">
+                  Oct 15, 2026 UTC
+                </td>
+<td class="py-4 px-4 text-on-surface">
+                  Referendum (2 Options)
+                </td>
+<td class="py-4 px-4 font-mono font-medium text-on-surface">
+                  2,105
+                </td>
+<td class="py-4 px-6 text-right space-x-2">
+<button class="px-3 py-1.5 bg-emerald-600 text-on-primary rounded text-label-md hover:bg-emerald-700 transition-colors">
+                    Publish Certified Results
+                  </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant text-on-surface rounded text-label-md hover:bg-surface-container-low transition-colors">
+                    Archive
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto bg-surface-container-low border-t border-outline-variant/30 py-6 px-gutter-lg text-center text-on-surface-variant text-hash-display">
+<p>© 2025 CivicVote Academic Consortium. Non-custodial cryptographic audit standard compliant.</p>
+</footer>
+</main>
+<!-- TWO-STEP EXPLICIT CONFIRMATION MODAL (Sensitive Action Dialog overlay, rendered openly for visibility/preview) -->
+<div class="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 p-4 backdrop-blur-none">
+<div class="bg-surface-container-lowest border border-outline-variant/80 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">warning</span>
+</div>
+<div>
+<h3 class="text-headline-md font-bold text-on-surface">Close Election &amp; Seal Blockchain Tally</h3>
+<p class="text-hash-display text-error font-semibold mt-0.5">Irreversible Consensus Action</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded border border-outline-variant/40 text-body-md text-on-surface space-y-2">
+<p>Closing this election will permanently lock the smart contract at <strong>Block #1,452</strong>. No further ballots can be accepted. Validator nodes will initiate automated zero-knowledge decryption.</p>
+</div>
+<div class="space-y-2">
+<label class="block text-label-md text-on-surface">
+          Type "CLOSE-SGA-2026" to confirm.
+        </label>
+<input class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded focus:border-secondary focus:ring-1 focus:ring-secondary text-code-mono" placeholder="CLOSE-SGA-2026" type="text"/>
+</div>
+<div class="flex items-center justify-end gap-3 pt-2 border-t border-outline-variant/20">
+<button class="px-4 py-2 border border-outline-variant bg-surface-container-lowest text-on-surface rounded font-medium text-body-md hover:bg-surface-container-low transition-colors">
+          Cancel
+        </button>
+<button class="px-4 py-2 bg-error text-on-error rounded font-medium text-body-md hover:bg-error/90 transition-colors">
+          Confirm &amp; Seal Ledger
+        </button>
+</div>
+</div>
+</div>
+</body></html>

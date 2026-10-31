@@ -4,7 +4,15 @@
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/stitch",
+      "destination": "/stitch_redesign/index.html"
+    },
+    {
+      "source": "/redesign",
+      "destination": "/stitch_redesign/index.html"
+    },
+    {
+      "source": "/((?!stitch_redesign).*)",
       "destination": "/index.html"
     }
   ]
