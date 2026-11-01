@@ -7,7 +7,7 @@ echo.
 
 :: 1. Launch FastAPI Backend in a new window
 echo [1/2] Launching Backend API Server (FastAPI on Port 8000)...
-start "Backend API Server (FastAPI)" cmd /k ".\backend\venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
+start "Backend API Server (FastAPI)" cmd /k ".\backend\venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload"
 
 :: 2. Launch React Vite Frontend in a new window
 echo [2/2] Launching Frontend Web App (React + Vite on Port 5173)...

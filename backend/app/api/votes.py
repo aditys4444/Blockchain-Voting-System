@@ -131,7 +131,9 @@ def get_my_vote_receipts(
 
 @router.get("/verify-receipt/{receipt_hash}")
 def verify_receipt(receipt_hash: str, db: Session = Depends(get_db)):
-    vote = db.query(Vote).filter(Vote.receipt_hash == receipt_hash).first()
+    vote = db.query(Vote).filter(
+        (Vote.receipt_hash == receipt_hash) | (Vote.tx_hash == receipt_hash)
+    ).first()
     if not vote:
         return {"verified": False, "message": "Receipt hash not found on system record."}
     
